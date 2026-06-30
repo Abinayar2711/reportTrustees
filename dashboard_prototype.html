@@ -468,6 +468,26 @@ body {
   opacity: 1;
 }
 
+/* LOCKED / ALL-TIME ROWS */
+.locked-row td {
+  color: var(--text-muted) !important;
+  font-weight: 400 !important;
+}
+.locked-row td:nth-child(2) {
+  font-weight: 500 !important;
+}
+.badge-alltime {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #8a9ab8;
+  background: #f0f2f7;
+  border: 1px solid #e2e6f0;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
 /* STORY VIEW */
 .story-header {
   background: var(--navy);
@@ -1767,6 +1787,11 @@ function updateTables() {
   updateRightTable();
 }
 
+function lockedRow(metric, currFmt, tip='') {
+  const tipHtml = tip ? ` <span class="metric-tip" data-tip="${tip}">ⓘ</span>` : '';
+  return `<tr class="locked-row"><td>${metric}${tipHtml}</td><td>${currFmt}</td><td>—</td><td><span class="badge-alltime">All-time</span></td></tr>`;
+}
+
 function row(metric, curr, prev, lowerIsBetter=false, currFmt='', prevFmt='', tip='') {
   const tipHtml = tip ? ` <span class="metric-tip" data-tip="${tip}">ⓘ</span>` : '';
   const cStr = (curr !== null && curr !== undefined) ? (currFmt || fmt(curr)) : '—';
@@ -1905,12 +1930,11 @@ function updateRightTable() {
     'Ran their very first course with actual students this FY — crossed from trained to actively teaching for the first time.');
   rows += row('Consistent Teachers', th.consistent, pth.consistent, false, '', '',
     'Ran at least one course in each 6-month window of the last FY — Reliability.');
-  rows += row('Pax-to-Teacher Conversion', tp.paxToTeacher, ptp.paxToTeacher,
-              false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—',
-    '% of participants who went on to complete TTP. Tracked from FY 2022-23 onwards.');
-  rows += row('VTP→TTP Conversion', tp.vtpToTtp, ptp.vtpToTtp,
-              false, tp.vtpToTtp+'%', ptp.vtpToTtp ? ptp.vtpToTtp+'%' : '—',
-    '% of VTP graduates who subsequently enrolled in TTP.');
+  const latestTP = TEACHER_PIPELINE.fy2425;
+  rows += lockedRow('Pax-to-Teacher Conversion', latestTP.paxToTeacher + '%',
+    'Cumulative: % of all participants who went on to complete TTP. Cannot be sliced by FY — a participant may enroll in one year and become a teacher years later. Showing all-time figure.');
+  rows += lockedRow('VTP→TTP Conversion', latestTP.vtpToTtp + '%',
+    'Cumulative: % of VTP graduates who subsequently enrolled in TTP. Cannot be sliced by FY — the conversion often spans multiple years. Showing all-time figure.');
   rows += row('Lapsed Teachers', th.lapsed, pth.lapsed, true, '', '',
     'Were active (taught at least once) in the last 3 FYs but did not teach anyone in the last 1 FY.');
   rows += row('Reactivated Teachers', th.reactivated, pth.reactivated, false, '', '',
