@@ -304,7 +304,17 @@ body {
 .chart-subtitle {
   font-size: 11px;
   color: var(--text-muted);
-  margin-bottom: 14px;
+  margin-bottom: 6px;
+}
+.chart-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: #f4f6fb;
+  border-left: 3px solid #c8d0e8;
+  padding: 5px 8px;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 12px;
+  line-height: 1.45;
 }
 
 .chart-callout {
@@ -995,13 +1005,15 @@ body {
     <div class="chart-row-2">
       <div class="chart-card">
         <div class="chart-title" id="retention-title">Cohort Retention Curve</div>
-        <div class="chart-subtitle" id="retention-sub">% of cohort still active at each year mark</div>
-        <div class="chart-wrap" style="height:230px;"><canvas id="retentionChart"></canvas></div>
+        <div class="chart-subtitle" id="retention-sub">Of every 100 first-timers from a given year, how many returned in Year 1, Year 2?</div>
+        <div class="chart-desc">A steep drop after Year 1 is normal — the question is whether the curve flattens or keeps falling. A flat tail means you're building a loyal returning base.</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="retentionChart"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Teacher Health Breakdown</div>
-        <div class="chart-subtitle" id="teacher-health-sub">Active teachers by engagement status</div>
-        <div class="chart-wrap" style="height:230px;"><canvas id="teacherHealthChart"></canvas></div>
+        <div class="chart-subtitle" id="teacher-health-sub">How consistently are your active teachers showing up each FY?</div>
+        <div class="chart-desc">Consistent = taught in both halves of the FY. A large "Inconsistent" bar means teachers are engaging but erratically — the ones most at risk of going fully lapsed next year.</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="teacherHealthChart"></canvas></div>
       </div>
     </div>
 
@@ -1010,19 +1022,22 @@ body {
     <div class="chart-row-3">
       <div class="chart-card">
         <div class="chart-title" id="donut-title">Program Concentration</div>
-        <div class="chart-subtitle">Share of participant volume by program type</div>
-        <div class="chart-wrap" style="height:210px;"><canvas id="programDonutChart"></canvas></div>
+        <div class="chart-subtitle">Which programs are carrying the bulk of your participants?</div>
+        <div class="chart-desc">High concentration in one or two programs is a dependency risk — a pricing change, teacher shortage, or regulatory issue in that program can swing your total numbers significantly.</div>
+        <div class="chart-wrap" style="height:185px;"><canvas id="programDonutChart"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-title">Participants per Teacher per FY</div>
-        <div class="chart-subtitle">Average teacher throughput, year over year</div>
-        <div class="chart-wrap" style="height:210px;"><canvas id="pptChart"></canvas></div>
+        <div class="chart-subtitle">How many participants does each active teacher reach on average?</div>
+        <div class="chart-desc">Rising PPT with a stable teacher count means higher efficiency. A falling PPT could signal burnout, smaller class sizes, or more part-time teachers joining the pool.</div>
+        <div class="chart-wrap" style="height:185px;"><canvas id="pptChart"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-title" id="pareto-title">Teacher Pareto Distribution</div>
-        <div class="chart-subtitle" id="pareto-sub">Participant volume delivered by teacher tier</div>
+        <div class="chart-subtitle" id="pareto-sub">What share of participant volume do your top teachers deliver?</div>
+        <div class="chart-desc">Healthy = risk is spread across many teachers. A fragility flag triggers when the top 5% carry 80%+ of volume — losing one or two teachers can collapse your numbers.</div>
         <div class="chart-callout" id="pareto-callout">Top 20% of teachers deliver 74% of total volume</div>
-        <div class="chart-wrap" style="height:150px;"><canvas id="paretoChart"></canvas></div>
+        <div class="chart-wrap" style="height:120px;"><canvas id="paretoChart"></canvas></div>
       </div>
     </div>
 
