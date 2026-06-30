@@ -925,7 +925,11 @@ body {
     <span class="filter-label">Period:</span>
     <span class="chip active" onclick="setPeriod('mtd',this)">MTD</span>
     <span class="chip" onclick="setPeriod('qtd',this)">QTD</span>
+    <span class="chip" onclick="setPeriod('q1',this)">Q1 (Apr–Jun)</span>
+    <span class="chip" onclick="setPeriod('q2',this)">Q2 (Jul–Sep)</span>
     <span class="chip" onclick="setPeriod('h1',this)">H1 (Apr–Sep)</span>
+    <span class="chip" onclick="setPeriod('q3',this)">Q3 (Oct–Dec)</span>
+    <span class="chip" onclick="setPeriod('q4',this)">Q4 (Jan–Mar)</span>
     <span class="chip" onclick="setPeriod('h2',this)">H2 (Oct–Mar)</span>
     <span class="chip" onclick="setPeriod('full',this)">Full FY</span>
   </div>
@@ -1579,14 +1583,21 @@ const TEACHER_PIPELINE = {
 ═══════════════════════════════════════════════ */
 const PERIOD_LABELS = {
   mtd:'Month to Date', qtd:'Quarter to Date',
-  h1:'H1 (Apr–Sep)', h2:'H2 (Oct–Mar)', full:'Full FY'
+  q1:'Q1 (Apr–Jun)', q2:'Q2 (Jul–Sep)',
+  h1:'H1 (Apr–Sep)',
+  q3:'Q3 (Oct–Dec)', q4:'Q4 (Jan–Mar)',
+  h2:'H2 (Oct–Mar)', full:'Full FY'
 };
 
 const MANAGER_DATA = {
   fy2425: {
     mtd:  { all:{newEnrollments:1100,coursesRun:38, activeTeachers:65, newMOUs:2 }, adult:{newEnrollments:700, coursesRun:26,activeTeachers:52,newMOUs:null}, children:{newEnrollments:220,coursesRun:8, activeTeachers:20,newMOUs:null}, institutional:{newEnrollments:180,coursesRun:4, activeTeachers:18,newMOUs:2 } },
     qtd:  { all:{newEnrollments:3600,coursesRun:118,activeTeachers:138,newMOUs:5 }, adult:{newEnrollments:2300,coursesRun:80,activeTeachers:110,newMOUs:null}, children:{newEnrollments:720,coursesRun:26,activeTeachers:45, newMOUs:null}, institutional:{newEnrollments:580,coursesRun:12,activeTeachers:55,newMOUs:5 } },
+    q1:   { all:{newEnrollments:4200,coursesRun:145,activeTeachers:190,newMOUs:7 }, adult:{newEnrollments:2700,coursesRun:98,activeTeachers:152,newMOUs:null}, children:{newEnrollments:870, coursesRun:32,activeTeachers:64, newMOUs:null}, institutional:{newEnrollments:630, coursesRun:15,activeTeachers:88,newMOUs:7 } },
+    q2:   { all:{newEnrollments:3600,coursesRun:120,activeTeachers:168,newMOUs:5 }, adult:{newEnrollments:2300,coursesRun:80, activeTeachers:135,newMOUs:null}, children:{newEnrollments:700, coursesRun:26,activeTeachers:52, newMOUs:null}, institutional:{newEnrollments:600, coursesRun:14,activeTeachers:78,newMOUs:5 } },
     h1:   { all:{newEnrollments:7800,coursesRun:265,activeTeachers:245,newMOUs:12}, adult:{newEnrollments:5000,coursesRun:178,activeTeachers:195,newMOUs:null}, children:{newEnrollments:1570,coursesRun:58,activeTeachers:82, newMOUs:null}, institutional:{newEnrollments:1230,coursesRun:29,activeTeachers:112,newMOUs:12} },
+    q3:   { all:{newEnrollments:3500,coursesRun:118,activeTeachers:185,newMOUs:6 }, adult:{newEnrollments:2280,coursesRun:79, activeTeachers:148,newMOUs:null}, children:{newEnrollments:720, coursesRun:26,activeTeachers:60, newMOUs:null}, institutional:{newEnrollments:500, coursesRun:13,activeTeachers:82,newMOUs:6 } },
+    q4:   { all:{newEnrollments:2930,coursesRun:97, activeTeachers:165,newMOUs:4 }, adult:{newEnrollments:1920,coursesRun:66, activeTeachers:130,newMOUs:null}, children:{newEnrollments:590, coursesRun:22,activeTeachers:48, newMOUs:null}, institutional:{newEnrollments:420, coursesRun:9, activeTeachers:72,newMOUs:4 } },
     h2:   { all:{newEnrollments:6430,coursesRun:215,activeTeachers:228,newMOUs:10}, adult:{newEnrollments:4200,coursesRun:145,activeTeachers:182,newMOUs:null}, children:{newEnrollments:1310,coursesRun:48,activeTeachers:75, newMOUs:null}, institutional:{newEnrollments:920, coursesRun:22,activeTeachers:98, newMOUs:10} },
     full: { all:{newEnrollments:14230,coursesRun:480,activeTeachers:342,newMOUs:22}, adult:{newEnrollments:9200,coursesRun:323,activeTeachers:210,newMOUs:null}, children:{newEnrollments:3100,coursesRun:106,activeTeachers:95,newMOUs:null}, institutional:{newEnrollments:2930,coursesRun:51,activeTeachers:145,newMOUs:22} }
   },
@@ -1598,7 +1609,11 @@ const LEVEL_DATA = {
   fy2425: {
     mtd:  { adult:{l1:540, l2:135,l3:25 }, children:{l1:165,l2:55 } },
     qtd:  { adult:{l1:1780,l2:445,l3:75 }, children:{l1:540,l2:180} },
+    q1:   { adult:{l1:2100,l2:520,l3:105}, children:{l1:650,l2:215} },
+    q2:   { adult:{l1:1750,l2:440,l3:85},  children:{l1:530,l2:175} },
     h1:   { adult:{l1:3850,l2:960,l3:190}, children:{l1:1180,l2:390} },
+    q3:   { adult:{l1:1850,l2:620,l3:160}, children:{l1:780,l2:92}  },
+    q4:   { adult:{l1:1500,l2:520,l3:130}, children:{l1:640,l2:78}  },
     h2:   { adult:{l1:3350,l2:1140,l3:290}, children:{l1:1420,l2:170} },
     full: { adult:{l1:7200,l2:2100,l3:480}, children:{l1:2600,l2:560} }
   },
@@ -1611,7 +1626,11 @@ const MGR_PAX_DATA = {
   fy2425: {
     mtd:  { all:{engaged:450,singleTouch:460,powerPax:82},    adult:{engaged:285,singleTouch:400,powerPax:74},  children:{engaged:105,singleTouch:42,powerPax:8},   institutional:{engaged:60, singleTouch:null,powerPax:null} },
     qtd:  { all:{engaged:1480,singleTouch:1510,powerPax:265}, adult:{engaged:940,singleTouch:1310,powerPax:238}, children:{engaged:345,singleTouch:140,powerPax:24}, institutional:{engaged:195,singleTouch:null,powerPax:null} },
+    q1:   { all:{engaged:1640,singleTouch:1670,powerPax:290}, adult:{engaged:1050,singleTouch:1450,powerPax:265}, children:{engaged:385,singleTouch:154,powerPax:26}, institutional:{engaged:205,singleTouch:null,powerPax:null} },
+    q2:   { all:{engaged:1350,singleTouch:1370,powerPax:240}, adult:{engaged:850, singleTouch:1190,powerPax:213}, children:{engaged:315,singleTouch:126,powerPax:22}, institutional:{engaged:185,singleTouch:null,powerPax:null} },
     h1:   { all:{engaged:2990,singleTouch:3040,powerPax:530}, adult:{engaged:1900,singleTouch:2640,powerPax:478}, children:{engaged:700,singleTouch:280,powerPax:48},  institutional:{engaged:390,singleTouch:null,powerPax:null} },
+    q3:   { all:{engaged:1360,singleTouch:1380,powerPax:242}, adult:{engaged:865, singleTouch:1200,powerPax:218}, children:{engaged:320,singleTouch:127,powerPax:22}, institutional:{engaged:175,singleTouch:null,powerPax:null} },
+    q4:   { all:{engaged:1110,singleTouch:1130,powerPax:198}, adult:{engaged:705, singleTouch:980, powerPax:177}, children:{engaged:260,singleTouch:103,powerPax:18}, institutional:{engaged:145,singleTouch:null,powerPax:null} },
     h2:   { all:{engaged:2470,singleTouch:2510,powerPax:440}, adult:{engaged:1570,singleTouch:2180,powerPax:395}, children:{engaged:580,singleTouch:230,powerPax:40},  institutional:{engaged:320,singleTouch:null,powerPax:null} },
     full: { all:{engaged:5410,singleTouch:5420,powerPax:890}, adult:{engaged:3100,singleTouch:4800,powerPax:890}, children:{engaged:980,singleTouch:1820,powerPax:116}, institutional:{engaged:1330,singleTouch:null,powerPax:null} }
   },
@@ -1624,7 +1643,11 @@ const MGR_TEACHER_DATA = {
   fy2425: {
     mtd:  {newlyActivated:6,  reactivated:3,  ttpGrads:8,  vtpGrads:12},
     qtd:  {newlyActivated:18, reactivated:8,  ttpGrads:24, vtpGrads:36},
+    q1:   {newlyActivated:18, reactivated:8,  ttpGrads:27, vtpGrads:42},
+    q2:   {newlyActivated:14, reactivated:6,  ttpGrads:21, vtpGrads:32},
     h1:   {newlyActivated:32, reactivated:14, ttpGrads:48, vtpGrads:74},
+    q3:   {newlyActivated:13, reactivated:5,  ttpGrads:22, vtpGrads:34},
+    q4:   {newlyActivated:10, reactivated:4,  ttpGrads:17, vtpGrads:26},
     h2:   {newlyActivated:23, reactivated:9,  ttpGrads:39, vtpGrads:60},
     full: {newlyActivated:55, reactivated:23, ttpGrads:87, vtpGrads:134}
   },
