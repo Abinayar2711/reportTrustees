@@ -386,6 +386,17 @@ body {
 .flag-row td { background: #fff3e0 !important; }
 .flag-row td:first-child { color: #b45309 !important; font-weight: 600 !important; }
 
+.sc-section-row td {
+  background: #f0f2f7;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  padding: 6px 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
 .flag-badge-yes {
   display: inline-block;
   background: var(--red);
@@ -1257,12 +1268,14 @@ const DATA = {
     adult: {
       uniquePax: 6800, engaged: 2400, progressed: 820, singleTouch: 3200,
       powerPax: 480, activeTeachers: 190, activeMOUs: null, zeroCourseM: null,
-      pptAll: 31, ttpDays: 230
+      pptAll: 31, ttpDays: 230,
+      l1Pax: 5500, l2Pax: 1100, l3Pax: 200, advancedProgressed: 80
     },
     children: {
       uniquePax: 2300, engaged: 720, progressed: 290, singleTouch: 1400,
       powerPax: 82, activeTeachers: 88, activeMOUs: null, zeroCourseM: null,
-      pptAll: 24, ttpDays: null
+      pptAll: 24, ttpDays: null,
+      l1Pax: 1900, l2Pax: 380
     },
     institutional: {
       uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
@@ -1297,12 +1310,14 @@ const DATA = {
     adult: {
       uniquePax: 8100, engaged: 2800, progressed: 980, singleTouch: 4300,
       powerPax: 620, activeTeachers: 198, activeMOUs: null, zeroCourseM: null,
-      pptAll: 35, ttpDays: 210
+      pptAll: 35, ttpDays: 210,
+      l1Pax: 6500, l2Pax: 1600, l3Pax: 330, advancedProgressed: 120
     },
     children: {
       uniquePax: 2900, engaged: 860, progressed: 370, singleTouch: 1740,
       powerPax: 98, activeTeachers: 92, activeMOUs: null, zeroCourseM: null,
-      pptAll: 28, ttpDays: null
+      pptAll: 28, ttpDays: null,
+      l1Pax: 2400, l2Pax: 470
     },
     institutional: {
       uniquePax: 1700, engaged: 1350, progressed: 280, singleTouch: null,
@@ -1337,12 +1352,14 @@ const DATA = {
     adult: {
       uniquePax: 9200, engaged: 3100, progressed: 1200, singleTouch: 4800,
       powerPax: 890, activeTeachers: 210, activeMOUs: null, zeroCourseM: null,
-      pptAll: 40, ttpDays: 187
+      pptAll: 40, ttpDays: 187,
+      l1Pax: 7200, l2Pax: 2100, l3Pax: 480, advancedProgressed: 180
     },
     children: {
       uniquePax: 3100, engaged: 980, progressed: 420, singleTouch: 1820,
       powerPax: 116, activeTeachers: 95, activeMOUs: null, zeroCourseM: null,
-      pptAll: 31, ttpDays: null
+      pptAll: 31, ttpDays: null,
+      l1Pax: 2600, l2Pax: 560
     },
     institutional: {
       uniquePax: 2930, engaged: 1330, progressed: 250, singleTouch: null,
@@ -1787,6 +1804,10 @@ function updateTables() {
   updateRightTable();
 }
 
+function sectionRow(label) {
+  return `<tr class="sc-section-row"><td colspan="4">${label}</td></tr>`;
+}
+
 function lockedRow(metric, currFmt, tip='') {
   const tipHtml = tip ? ` <span class="metric-tip" data-tip="${tip}">ⓘ</span>` : '';
   return `<tr class="locked-row"><td>${metric}${tipHtml}</td><td>${currFmt}</td><td>—</td><td><span class="badge-alltime">All-time</span></td></tr>`;
@@ -1846,6 +1867,15 @@ function updateAdultTable() {
   rows += row('Avg Time-to-Progression (days)', da.ttpDays, pda.ttpDays, true,
               da.ttpDays ? da.ttpDays+'d' : '—', pda.ttpDays ? pda.ttpDays+'d' : '—',
     'Average days from entry enrollment to first higher-level course, for those who progressed');
+  rows += sectionRow('Program Level Breakdown');
+  rows += row('Level 1 — Entry', d.l1Pax, pd.l1Pax, false, '', '',
+    'Participants enrolled in entry-level programs this FY');
+  rows += row('Level 2 — AMP / DSN', d.l2Pax, pd.l2Pax, false, '', '',
+    'Participants enrolled in intermediate programs such as AMP and DSN');
+  rows += row('Level 3 — Blessing / Sanyam', d.l3Pax, pd.l3Pax, false, '', '',
+    'Participants enrolled in advanced programs such as Blessing and Sanyam');
+  rows += row('Advanced Progression (L2→L3)', d.advancedProgressed, pd.advancedProgressed, false, '', '',
+    'Participants who moved from a Level 2 to a Level 3 program this FY');
   document.getElementById('sc-adult-body').innerHTML = rows;
 }
 
@@ -1868,6 +1898,11 @@ function updateChildrenTable() {
     'Enrolled exactly once and never returned');
   rows += row('Power Participants (3+)', d.powerPax, pd.powerPax, false, '', '',
     'Enrolled in 3 or more courses — prime candidates for becoming a volunteer or teacher');
+  rows += sectionRow('Program Level Breakdown');
+  rows += row('Level 1 — Entry', d.l1Pax, pd.l1Pax, false, '', '',
+    'Participants enrolled in entry-level children programs this FY (includes IP)');
+  rows += row('Level 2 — Higher', d.l2Pax, pd.l2Pax, false, '', '',
+    'Participants enrolled in higher-level children programs this FY');
   document.getElementById('sc-children-body').innerHTML = rows;
 }
 
