@@ -861,14 +861,14 @@ body {
           <tbody id="sc-right-body"></tbody>
         </table>
       </div>
-      <div class="scorecard-card">
+      <div class="scorecard-card" id="sc-card-adult">
         <div class="scorecard-title">Adult Participant Health</div>
         <table class="sc-table">
           <thead><tr><th>Metric</th><th>This FY</th><th>Last FY</th><th>Change</th></tr></thead>
           <tbody id="sc-adult-body"></tbody>
         </table>
       </div>
-      <div class="scorecard-card">
+      <div class="scorecard-card" id="sc-card-children">
         <div class="scorecard-title">Children Participant Health</div>
         <table class="sc-table">
           <thead><tr><th>Metric</th><th>This FY</th><th>Last FY</th><th>Change</th></tr></thead>
@@ -1684,9 +1684,14 @@ function renderParetoChart() {
    SCORECARD TABLES
 ═══════════════════════════════════════════════ */
 function updateTables() {
+  const seg = currentSegment;
+  const showAdult    = seg === 'all' || seg === 'adult';
+  const showChildren = seg === 'all' || seg === 'children';
+  document.getElementById('sc-card-adult').style.display    = showAdult    ? '' : 'none';
+  document.getElementById('sc-card-children').style.display = showChildren ? '' : 'none';
   updateOverallTable();
-  updateAdultTable();
-  updateChildrenTable();
+  if (showAdult)    updateAdultTable();
+  if (showChildren) updateChildrenTable();
   updateRightTable();
 }
 
