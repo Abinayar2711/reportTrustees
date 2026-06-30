@@ -1386,7 +1386,7 @@ body {
       <div class="kpi-card kpi-card-sm">
         <div class="kpi-name">New Enrollments</div>
         <div class="kpi-number" id="mkpi-new-num">—</div>
-        <span class="kpi-change none">First-time mobile this period</span>
+        <span class="kpi-change none">Mobile not seen in any prior FY since 2022-23</span>
       </div>
       <div class="kpi-card kpi-card-sm">
         <div class="kpi-name">Returning Participants</div>
@@ -1480,7 +1480,7 @@ body {
 const DATA = {
   fy2223: {
     all: {
-      totalRegistrations: 14280, newEnrollments: 6630, coursesRun: 320, teachersDelivering: 248,
+      totalRegistrations: 14280, newEnrollments: 10200, coursesRun: 320, teachersDelivering: 248,
       uniquePax: 10200, engaged: 3800, progressed: 1300, singleTouch: 4500,
       powerPax: 620, activeTeachers: 353, activeMOUs: 78, zeroCourseM: 22,
       totalMOUs: 78, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1490,21 +1490,21 @@ const DATA = {
       hyperConc: true, pptAll: 28, ttpDays: 230
     },
     adult: {
-      totalRegistrations: 9520, newEnrollments: 4420, coursesRun: 218, teachersDelivering: 158,
+      totalRegistrations: 9520, newEnrollments: 6800, coursesRun: 218, teachersDelivering: 158,
       uniquePax: 6800, engaged: 2400, progressed: 820, singleTouch: 3200,
       powerPax: 480, activeTeachers: 190, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: 230,
       l1Pax: 5500, l2Pax: 1100, l3Pax: 200, advancedProgressed: 80
     },
     children: {
-      totalRegistrations: 2760, newEnrollments: 1495, coursesRun: 70, teachersDelivering: 62,
+      totalRegistrations: 2760, newEnrollments: 2300, coursesRun: 70, teachersDelivering: 62,
       uniquePax: 2300, engaged: 720, progressed: 290, singleTouch: 1400,
       powerPax: 82, activeTeachers: 88, activeMOUs: null, zeroCourseM: null,
       pptAll: 24, ttpDays: null,
       l1Pax: 1900, l2Pax: 380
     },
     institutional: {
-      totalRegistrations: 1290, newEnrollments: 715, coursesRun: 32, teachersDelivering: 48,
+      totalRegistrations: 1290, newEnrollments: 1100, coursesRun: 32, teachersDelivering: 48,
       uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
       activeTeachers: 120, activeMOUs: 63, zeroCourseM: 22, totalMOUs: 78,
       schools: 48, colleges: 30, mouLag: 52, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1972,14 +1972,14 @@ function updateKPIs() {
     // Institutional: Total Registrations · Unique Pax · New Enrollments · Courses Run · Active MOUs
     setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false, false, false, 'Course seat-count at institutions this FY');
     setKPI(1, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false, false, false, 'Distinct individuals via institutions (by mobile)');
-    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'First-time mobile through institutions this FY');
+    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'Mobile not seen in any previous FY since 2022-23');
     setKPI(3, 'Courses Run', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions delivered at schools & colleges');
     setKPI(4, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false, false, false, 'Institutions with ≥1 course this FY');
   } else {
     // All / Adult / Children: Total Registrations · Unique Participants · New Enrollments · Courses Run · Active Teachers
     setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false, false, false, 'Course seat-count by registration ID');
     setKPI(1, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false, false, false, 'Distinct individuals by mobile — actual people');
-    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'First-time mobile this FY — net new people reached');
+    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'Mobile not seen in any previous FY since 2022-23');
     setKPI(3, 'Courses Run', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions delivered across all teachers this FY');
     setKPI(4, 'Teachers Delivering', d.teachersDelivering, pFY ? pd.teachersDelivering : null, false, false, false, 'Ran ≥1 course this FY — who contributed to these numbers');
   }
@@ -2297,7 +2297,7 @@ function updateOverallTable() {
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct individuals by mobile number — one person regardless of how many courses they attended this FY');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'Individuals whose mobile appears for the first time this FY — net new people reached');
+    'Mobile number not seen in any prior FY since 2022-23 — truly first-time individual in the program');
   rows += row('Courses Run', d.coursesRun, pd.coursesRun, false, '', '',
     'Total course sessions delivered this FY');
   rows += row('Teachers Delivering', d.teachersDelivering, pd.teachersDelivering, false, '', '',
@@ -2333,7 +2333,7 @@ function updateAdultTable() {
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct adult individuals (18+) by mobile number');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'First-time mobile number this FY — net new adult individuals reached');
+    'Mobile not seen in any prior FY since 2022-23 — first-time adult in the program');
   rows += row('Engaged (>1 course)', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed', d.progressed, pd.progressed, false, '', '',
@@ -2368,7 +2368,7 @@ function updateChildrenTable() {
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct children participants (under 18) — deduplicated by mobile (typically parent\'s mobile for young children)');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'First-time mobile this FY — net new children reached');
+    'Mobile not seen in any prior FY since 2022-23 — first-time child participant in the program');
   rows += row('IP Program Participants', d.uniquePax ? Math.round(d.uniquePax*0.59) : null,
               pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null, false, '', '',
     'Participants in the IP program specifically — max revenue');
@@ -2399,7 +2399,7 @@ function updateInstitutionalTable() {
   rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct individuals enrolled through institutions — deduplicated by mobile where available');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'First-time mobile this FY through institutional channels — net new individuals reached via institutions');
+    'Mobile not seen in any prior FY since 2022-23 — first-time individual enrolled through an institution');
   rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs, false, '', '',
     'Cumulative Memoranda of Understanding signed with schools and colleges — includes all historical MOUs');
   rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs, false, '', '',
