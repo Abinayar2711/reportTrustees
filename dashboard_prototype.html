@@ -1894,10 +1894,8 @@ function updateInstitutionalTable() {
     'Average days from MOU signing to the institution running its very first course');
   rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst, false, '', '',
     'Average number of courses run per institution that was active this FY — measures engagement depth');
-  rows += row('Student Penetration Rate', d.studentPenetrationRate, pd.studentPenetrationRate,
-              false, d.studentPenetrationRate ? d.studentPenetrationRate+'%' : '—',
-              pd.studentPenetrationRate ? pd.studentPenetrationRate+'%' : '—',
-    '% of total eligible students across MOU institutions who enrolled in at least one course');
+  rows += lockedRow('Student Penetration Rate', '—',
+    'Data not yet confirmed — % of total eligible students across MOU institutions who enrolled in at least one course. To be enabled once eligibility counts are extracted from MOU documents.');
   rows += row('Avg Behavioral Depth Score', d.avgDepthScore, pd.avgDepthScore,
               false, d.avgDepthScore ? d.avgDepthScore+'/4' : '—', pd.avgDepthScore ? pd.avgDepthScore+'/4' : '—',
     '0–4 score per institution: 0 = no activity, 1 = entry only, 2 = entry + higher, 3 = repeat courses, 4 = full multi-level depth');
@@ -1930,11 +1928,12 @@ function updateRightTable() {
     'Ran their very first course with actual students this FY — crossed from trained to actively teaching for the first time.');
   rows += row('Consistent Teachers', th.consistent, pth.consistent, false, '', '',
     'Ran at least one course in each 6-month window of the last FY — Reliability.');
-  const latestTP = TEACHER_PIPELINE.fy2425;
-  rows += lockedRow('Pax-to-Teacher Conversion', latestTP.paxToTeacher + '%',
-    'Cumulative: % of all participants who went on to complete TTP. Cannot be sliced by FY — a participant may enroll in one year and become a teacher years later. Showing all-time figure.');
-  rows += lockedRow('VTP→TTP Conversion', latestTP.vtpToTtp + '%',
-    'Cumulative: % of VTP graduates who subsequently enrolled in TTP. Cannot be sliced by FY — the conversion often spans multiple years. Showing all-time figure.');
+  rows += row('Pax-to-Teacher Conversion', tp.paxToTeacher, ptp.paxToTeacher,
+              false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—',
+    '% of participants who went on to complete TTP. Tracked from FY 2022-23 onwards.');
+  rows += row('VTP→TTP Conversion', tp.vtpToTtp, ptp.vtpToTtp,
+              false, tp.vtpToTtp+'%', ptp.vtpToTtp ? ptp.vtpToTtp+'%' : '—',
+    '% of VTP graduates who subsequently enrolled in TTP.');
   rows += row('Lapsed Teachers', th.lapsed, pth.lapsed, true, '', '',
     'Were active (taught at least once) in the last 3 FYs but did not teach anyone in the last 1 FY.');
   rows += row('Reactivated Teachers', th.reactivated, pth.reactivated, false, '', '',
