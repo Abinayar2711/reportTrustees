@@ -408,6 +408,66 @@ body {
   letter-spacing: 0.03em;
 }
 
+/* METRIC TOOLTIPS */
+.metric-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e2e6f0;
+  color: #8a9ab8;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: help;
+  margin-left: 5px;
+  position: relative;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.metric-tip::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1a2744;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1001;
+}
+
+.metric-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a2744;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 8px 11px;
+  border-radius: 7px;
+  white-space: normal;
+  width: 230px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1000;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+}
+
+.metric-tip:hover::before,
+.metric-tip:hover::after {
+  opacity: 1;
+}
+
 /* STORY VIEW */
 .story-header {
   background: var(--navy);
@@ -1707,12 +1767,13 @@ function updateTables() {
   updateRightTable();
 }
 
-function row(metric, curr, prev, lowerIsBetter=false, currFmt='', prevFmt='') {
+function row(metric, curr, prev, lowerIsBetter=false, currFmt='', prevFmt='', tip='') {
+  const tipHtml = tip ? ` <span class="metric-tip" data-tip="${tip}">ⓘ</span>` : '';
   const cStr = (curr !== null && curr !== undefined) ? (currFmt || fmt(curr)) : '—';
   const pStr = (prev !== null && prev !== undefined) ? (prevFmt || fmt(prev)) : '—';
   const chg  = (prev !== null && prev !== undefined && curr !== null && curr !== undefined)
     ? scChange(curr, prev, lowerIsBetter) : '<span class="chg-none">—</span>';
-  return `<tr><td>${metric}</td><td>${cStr}</td><td>${pStr}</td><td>${chg}</td></tr>`;
+  return `<tr><td>${metric}${tipHtml}</td><td>${cStr}</td><td>${pStr}</td><td>${chg}</td></tr>`;
 }
 
 function updateOverallTable() {
@@ -1721,14 +1782,21 @@ function updateOverallTable() {
   const d   = getD(fy, 'all');
   const pd  = pFY ? getD(pFY, 'all') : {};
   let rows = '';
-  rows += row('Unique Participants', d.uniquePax, pd.uniquePax);
-  rows += row('Engaged Participants', d.engaged, pd.engaged);
-  rows += row('Progressed Participants', d.progressed, pd.progressed);
-  rows += row('Single-Touch Pax', d.singleTouch, pd.singleTouch, true);
-  rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
+  rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
+    'Distinct individuals enrolled in at least one course — ever');
+  rows += row('Engaged Participants', d.engaged, pd.engaged, false, '', '',
+    'Enrolled in more than one course at any level — returned at least once');
+  rows += row('Progressed Participants', d.progressed, pd.progressed, false, '', '',
+    'Moved from an entry-level to a higher-level course within 2 FYs of first enrollment');
+  rows += row('Single-Touch Pax', d.singleTouch, pd.singleTouch, true, '', '',
+    'Enrolled exactly once and never returned — churned after the first experience');
+  rows += row('Power Participants (3+)', d.powerPax, pd.powerPax, false, '', '',
+    'Enrolled in 3 or more courses — the prime pool for volunteer and teacher recruitment');
   rows += row('Avg Time-to-Progression (days)', d.ttpDays, pd.ttpDays, true,
-              d.ttpDays ? d.ttpDays+'d' : '—', pd.ttpDays ? pd.ttpDays+'d' : '—');
-  rows += row('Active MOUs (Institutional)', d.activeMOUs, pd.activeMOUs);
+              d.ttpDays ? d.ttpDays+'d' : '—', pd.ttpDays ? pd.ttpDays+'d' : '—',
+    'Average days from entry enrollment to first higher-level course, for those who progressed');
+  rows += row('Active MOUs (Institutional)', d.activeMOUs, pd.activeMOUs, false, '', '',
+    'Institutions with at least one course run this FY');
   document.getElementById('sc-overall-body').innerHTML = rows;
 }
 
@@ -1740,13 +1808,19 @@ function updateAdultTable() {
   const da  = getD(fy, 'all');
   const pda = pFY ? getD(pFY, 'all') : {};
   let rows = '';
-  rows += row('Unique Participants', d.uniquePax, pd.uniquePax);
-  rows += row('Engaged (>1 course)', d.engaged, pd.engaged);
-  rows += row('Progressed', d.progressed, pd.progressed);
-  rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true);
-  rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
+  rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
+    'Distinct adult individuals (18+) enrolled in at least one course — ever');
+  rows += row('Engaged (>1 course)', d.engaged, pd.engaged, false, '', '',
+    'Enrolled in more than one course at any level — returned at least once');
+  rows += row('Progressed', d.progressed, pd.progressed, false, '', '',
+    'Moved from an entry-level to a higher-level course within 2 FYs of first enrollment');
+  rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true, '', '',
+    'Enrolled exactly once and never returned — churned after the first experience');
+  rows += row('Power Participants (3+)', d.powerPax, pd.powerPax, false, '', '',
+    'Enrolled in 3 or more courses — the prime pool for volunteer and teacher recruitment');
   rows += row('Avg Time-to-Progression (days)', da.ttpDays, pda.ttpDays, true,
-              da.ttpDays ? da.ttpDays+'d' : '—', pda.ttpDays ? pda.ttpDays+'d' : '—');
+              da.ttpDays ? da.ttpDays+'d' : '—', pda.ttpDays ? pda.ttpDays+'d' : '—',
+    'Average days from entry enrollment to first higher-level course, for those who progressed');
   document.getElementById('sc-adult-body').innerHTML = rows;
 }
 
@@ -1756,13 +1830,19 @@ function updateChildrenTable() {
   const d   = getD(fy, 'children');
   const pd  = pFY ? getD(pFY, 'children') : {};
   let rows = '';
-  rows += row('Unique Participants', d.uniquePax, pd.uniquePax);
+  rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
+    'Distinct children participants (under 18) enrolled in at least one course — ever');
   rows += row('IP Program Participants', d.uniquePax ? Math.round(d.uniquePax*0.59) : null,
-              pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null);
-  rows += row('Engaged (>1 course)', d.engaged, pd.engaged);
-  rows += row('Progressed', d.progressed, pd.progressed);
-  rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true);
-  rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
+              pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null, false, '', '',
+    'Participants in the IP program specifically — the flagship children offering with the highest revenue');
+  rows += row('Engaged (>1 course)', d.engaged, pd.engaged, false, '', '',
+    'Enrolled in more than one course at any level — returned at least once');
+  rows += row('Progressed', d.progressed, pd.progressed, false, '', '',
+    'Moved from an entry-level to a higher-level course within 2 FYs of first enrollment');
+  rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true, '', '',
+    'Enrolled exactly once and never returned — churned after the first experience');
+  rows += row('Power Participants (3+)', d.powerPax, pd.powerPax, false, '', '',
+    'Enrolled in 3 or more courses — the prime pool for volunteer and teacher recruitment');
   document.getElementById('sc-children-body').innerHTML = rows;
 }
 
@@ -1772,20 +1852,30 @@ function updateInstitutionalTable() {
   const d   = getD(fy, 'institutional');
   const pd  = pFY ? getD(pFY, 'institutional') : {};
   let rows = '';
-  rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax);
-  rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs);
-  rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs);
-  rows += row('Schools', d.schools, pd.schools);
-  rows += row('Colleges', d.colleges, pd.colleges);
-  rows += row('Zero-Course MOUs', d.zeroCourseM, pd.zeroCourseM, true);
+  rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax, false, '', '',
+    'Distinct individuals enrolled through school or college-based programs this FY');
+  rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs, false, '', '',
+    'Cumulative Memoranda of Understanding signed with schools and colleges — includes all historical MOUs');
+  rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs, false, '', '',
+    'Institutions with at least one course run this FY');
+  rows += row('Schools', d.schools, pd.schools, false, '', '',
+    'School institutions with signed MOUs');
+  rows += row('Colleges', d.colleges, pd.colleges, false, '', '',
+    'College institutions with signed MOUs');
+  rows += row('Zero-Course MOUs', d.zeroCourseM, pd.zeroCourseM, true, '', '',
+    'Signed institutions that have run zero courses — untapped capacity that needs follow-up');
   rows += row('MOU → First Course Lag (days)', d.mouLag, pd.mouLag, true,
-              d.mouLag ? d.mouLag+'d' : '—', pd.mouLag ? pd.mouLag+'d' : '—');
-  rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst);
+              d.mouLag ? d.mouLag+'d' : '—', pd.mouLag ? pd.mouLag+'d' : '—',
+    'Average days from MOU signing to the institution running its very first course');
+  rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst, false, '', '',
+    'Average number of courses run per institution that was active this FY — measures engagement depth');
   rows += row('Student Penetration Rate', d.studentPenetrationRate, pd.studentPenetrationRate,
               false, d.studentPenetrationRate ? d.studentPenetrationRate+'%' : '—',
-              pd.studentPenetrationRate ? pd.studentPenetrationRate+'%' : '—');
+              pd.studentPenetrationRate ? pd.studentPenetrationRate+'%' : '—',
+    '% of total eligible students across MOU institutions who enrolled in at least one course');
   rows += row('Avg Behavioral Depth Score', d.avgDepthScore, pd.avgDepthScore,
-              false, d.avgDepthScore ? d.avgDepthScore+'/4' : '—', pd.avgDepthScore ? pd.avgDepthScore+'/4' : '—');
+              false, d.avgDepthScore ? d.avgDepthScore+'/4' : '—', pd.avgDepthScore ? pd.avgDepthScore+'/4' : '—',
+    '0–4 score per institution: 0 = no activity, 1 = entry only, 2 = entry + higher, 3 = repeat courses, 4 = full multi-level depth');
   document.getElementById('sc-institutional-body').innerHTML = rows;
 }
 
@@ -1800,21 +1890,31 @@ function updateRightTable() {
   document.getElementById('sc-right-title').textContent = 'Teacher Pipeline';
 
   let rows = '';
-  rows += row('TTP Graduates', tp.ttpGrads, ptp.ttpGrads);
-  rows += row('VTP Graduates', tp.vtpGrads, ptp.vtpGrads);
+  rows += row('TTP Graduates', tp.ttpGrads, ptp.ttpGrads, false, '', '',
+    'Completed the Teacher Training Program this FY (~15 days). Trained but may not be actively teaching yet.');
+  rows += row('VTP Graduates', tp.vtpGrads, ptp.vtpGrads, false, '', '',
+    'Completed the Volunteer Training Program this FY (shorter path). Graduates can volunteer and eventually become full teachers.');
   rows += row('Activation Rate (within 1 FY)', tp.activationRate, ptp.activationRate,
-              false, tp.activationRate+'%', ptp.activationRate ? ptp.activationRate+'%' : '—');
+              false, tp.activationRate+'%', ptp.activationRate ? ptp.activationRate+'%' : '—',
+    '% of TTP/VTP graduates who ran their first course within 1 FY of completing training.');
   rows += row('Time-to-First-Course (avg days)', tp.timeToFirstCourse, ptp.timeToFirstCourse, true,
               tp.timeToFirstCourse ? tp.timeToFirstCourse+'d' : '—',
-              ptp.timeToFirstCourse ? ptp.timeToFirstCourse+'d' : '—');
-  rows += row('Newly Activated Teachers', th.newlyActivated, pth.newlyActivated);
-  rows += row('Consistent Teachers', th.consistent, pth.consistent);
+              ptp.timeToFirstCourse ? ptp.timeToFirstCourse+'d' : '—',
+    'Average days from TTP/VTP completion to running the first course with students. Lower is better.');
+  rows += row('Newly Activated Teachers', th.newlyActivated, pth.newlyActivated, false, '', '',
+    'Ran their very first course with actual students this FY — crossed from trained to actively teaching for the first time.');
+  rows += row('Consistent Teachers', th.consistent, pth.consistent, false, '', '',
+    'Ran at least one course in each 6-month window of the last FY — the most reliable delivery backbone.');
   rows += row('Pax-to-Teacher Conversion', tp.paxToTeacher, ptp.paxToTeacher,
-              false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—');
+              false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—',
+    '% of participants who went on to complete TTP/VTP training. Target is 4–5% (CASE benchmark). Tracked from FY 2022-23 onwards.');
   rows += row('VTP→TTP Conversion', tp.vtpToTtp, ptp.vtpToTtp,
-              false, tp.vtpToTtp+'%', ptp.vtpToTtp ? ptp.vtpToTtp+'%' : '—');
-  rows += row('Lapsed Teachers', th.lapsed, pth.lapsed, true);
-  rows += row('Reactivated Teachers', th.reactivated, pth.reactivated);
+              false, tp.vtpToTtp+'%', ptp.vtpToTtp ? ptp.vtpToTtp+'%' : '—',
+    '% of VTP graduates who subsequently enrolled in TTP — measures how well the volunteer pipeline converts to full teachers.');
+  rows += row('Lapsed Teachers', th.lapsed, pth.lapsed, true, '', '',
+    'Were active (taught at least once) in the last 3 FYs but did not teach anyone in the last 1 FY.');
+  rows += row('Reactivated Teachers', th.reactivated, pth.reactivated, false, '', '',
+    'Were lapsed, then returned to actively teach again this FY — a positive recovery signal.');
 
   // Hyper-concentration flag
   const flagCurr = tp.hyperConc;
@@ -1825,8 +1925,9 @@ function updateRightTable() {
   const prevBadge = flagPrev !== null
     ? (flagPrev ? '<span class="flag-badge-yes">YES</span>' : '<span class="flag-badge-no">NO</span>')
     : '—';
+  const concTip = 'Triggered when a small group of teachers delivers an outsized share of participant volume. Signals systemic delivery risk — if key teachers become unavailable, output drops sharply.';
   rows += `<tr class="${flagCurr ? 'flag-row' : ''}">
-    <td>Hyper-Concentration Flag</td>
+    <td>Hyper-Concentration Flag <span class="metric-tip" data-tip="${concTip}">ⓘ</span></td>
     <td style="text-align:right">${flagBadge}</td>
     <td style="text-align:right">${prevBadge}</td>
     <td style="text-align:right;color:#b45309;font-weight:700;">—</td>
