@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Owner Dashboard — NGO Wellness</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1a2744;
+  --navy-light: #223060;
+  --green: #2ecc71;
+  --red: #e74c3c;
+  --amber: #f39c12;
+  --white: #ffffff;
+  --bg: #f0f2f7;
+  --card-shadow: 0 2px 12px rgba(26,39,68,0.10);
+  --border: #e2e6f0;
+  --text-primary: #1a2744;
+  --text-secondary: #5a6a8a;
+  --text-muted: #8a9ab8;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* LOADING BAR */
+#loading-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), #27ae60);
+  z-index: 9999;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+#loading-bar.running {
+  opacity: 1;
+  animation: loadrun 0.6s ease forwards;
+}
+@keyframes loadrun {
+  0%   { width: 0%; }
+  60%  { width: 75%; }
+  100% { width: 100%; }
+}
+
+/* TOP NAV */
+.topnav {
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 24px;
+  height: 58px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.28);
+}
+
+.logo-circle {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), #27ae60);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 12px; color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.topnav-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  flex: 1;
+}
+
+.topnav-title span {
+  font-weight: 300;
+  opacity: 0.55;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.fy-select {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #fff;
+  padding: 5px 28px 5px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.7)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  font-weight: 600;
+}
+
+.fy-select option { background: #1a2744; color: #fff; }
+
+.view-toggle {
+  display: flex;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.view-toggle button {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  padding: 7px 18px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+
+.view-toggle button.active { background: var(--green); color: #fff; }
+.view-toggle button:hover:not(.active) { background: rgba(255,255,255,0.15); color: #fff; }
+
+/* FILTER BAR */
+.filter-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 9px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: sticky;
+  top: 58px;
+  z-index: 100;
+}
+
+.filter-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-right: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.chip {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.chip.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.chip:hover:not(.active) { border-color: var(--navy); color: var(--navy); }
+
+/* VIEWS */
+.view { display: none; }
+.view.active { display: block; }
+
+/* PAGE BODY */
+.page-body {
+  padding: 22px 24px 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* SECTION HEADER */
+.section-header {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  margin-top: 28px;
+  padding-left: 8px;
+  border-left: 3px solid var(--green);
+}
+
+.section-header:first-child { margin-top: 0; }
+
+/* KPI STRIP */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.kpi-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 16px 14px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.18s;
+}
+
+.kpi-card:hover { box-shadow: 0 4px 20px rgba(26,39,68,0.14); }
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--green);
+}
+
+.kpi-card.accent-red::before { background: var(--red); }
+.kpi-card.accent-amber::before { background: var(--amber); }
+.kpi-card.accent-grey::before { background: #c0cce0; }
+
+.kpi-name {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kpi-number {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 9px;
+  letter-spacing: -0.02em;
+}
+
+.kpi-number.na { font-size: 20px; color: var(--text-muted); font-weight: 600; }
+
+.kpi-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.kpi-change.up   { color: #1a7a42; background: #d4f7e4; }
+.kpi-change.down { color: #a01c1c; background: #fde8e8; }
+.kpi-change.neu  { color: #7a4f00; background: #fff0c8; }
+.kpi-change.none { color: var(--text-muted); background: #f0f2f7; }
+
+/* CHART LAYOUTS */
+.chart-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.chart-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 18px 14px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+}
+
+.chart-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+
+.chart-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.chart-callout {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #7a4f00;
+  background: #fff8e7;
+  border: 1px solid #ffe0a0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 12px;
+}
+
+.chart-wrap { position: relative; }
+
+/* SCORECARD TABLES */
+.scorecard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.scorecard-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+}
+
+.scorecard-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--navy);
+}
+
+.sc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.sc-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sc-table td {
+  padding: 8px 8px;
+  border-bottom: 1px solid #f0f2f7;
+  vertical-align: middle;
+}
+
+.sc-table tr:last-child td { border-bottom: none; }
+.sc-table tr:hover td { background: #f7f9fc; }
+.sc-table td:first-child { color: var(--text-secondary); font-weight: 500; }
+.sc-table td:nth-child(2) { font-weight: 700; color: var(--navy); text-align: right; }
+.sc-table td:nth-child(3) { font-weight: 600; color: var(--text-secondary); text-align: right; }
+.sc-table td:nth-child(4) { text-align: right; font-weight: 600; font-size: 12px; }
+
+.chg-up   { color: #1a7a42; }
+.chg-down { color: #a01c1c; }
+.chg-neu  { color: #7a4f00; }
+.chg-none { color: var(--text-muted); }
+
+.flag-row td { background: #fff3e0 !important; }
+.flag-row td:first-child { color: #b45309 !important; font-weight: 600 !important; }
+
+.flag-badge-yes {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+.flag-badge-no {
+  display: inline-block;
+  background: var(--green);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+/* STORY VIEW */
+.story-header {
+  background: var(--navy);
+  color: #fff;
+  padding: 38px 24px 34px;
+  text-align: center;
+}
+
+.story-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.story-header .fy-sub {
+  font-size: 13px;
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.story-fy-badge {
+  display: inline-block;
+  margin-top: 14px;
+  background: rgba(46,204,113,0.18);
+  border: 1px solid rgba(46,204,113,0.4);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a8f0c8;
+  letter-spacing: 0.02em;
+}
+
+.story-body {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.chapter {
+  padding: 34px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chapter:last-child { border-bottom: none; }
+
+.chapter-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  margin-bottom: 5px;
+}
+
+.chapter-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 5px;
+  letter-spacing: -0.02em;
+}
+
+.chapter-question {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 22px;
+  padding-left: 14px;
+  border-left: 3px solid var(--border);
+}
+
+.stat-cards-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 18px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.stat-card-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.stat-card-number {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 5px;
+  letter-spacing: -0.03em;
+}
+
+.stat-card-sub { font-size: 12px; color: var(--text-secondary); }
+
+.story-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: #f7f9fc;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border-left: 4px solid var(--green);
+}
+
+.story-note strong { color: var(--navy); }
+
+.story-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.story-stat-mini {
+  background: #fff;
+  border-radius: 8px;
+  padding: 13px 14px;
+  box-shadow: 0 1px 6px rgba(26,39,68,0.08);
+  border: 1px solid var(--border);
+}
+
+.story-stat-mini .val {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.story-stat-mini .lbl {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-green {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a7a42;
+  background: #d4f7e4;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.badge-amber {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7a4f00;
+  background: #fff0c8;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.badge-red {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7a1c1c;
+  background: #fde8e8;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.story-chart-wrap {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.story-chart-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.engagement-bar-wrap { margin: 16px 0; }
+
+.engagement-bar-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.h-bar {
+  display: flex;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.h-bar-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.h-bar-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 9px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 9px; height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.callout-box {
+  background: linear-gradient(135deg, #eaf9f0, #d4f7e4);
+  border: 1.5px solid #a8dfc0;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-text {
+  font-size: 13px;
+  color: #1a5c36;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.callout-text strong { font-weight: 700; }
+
+.alert-box {
+  background: #fff8e7;
+  border: 1.5px solid var(--amber);
+  border-radius: 10px;
+  padding: 13px 16px;
+  margin-top: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #7a4f00;
+}
+
+.alert-box .alert-icon { font-size: 17px; flex-shrink: 0; }
+
+.score-gauge-wrap { margin: 14px 0; }
+
+.score-gauge-track {
+  height: 18px;
+  background: var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.score-gauge-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--navy), var(--green));
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  transition: width 0.8s ease;
+}
+
+.score-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  .chart-row-3 { grid-template-columns: 1fr 1fr; }
+  .scorecard-grid { grid-template-columns: 1fr; }
+  .stat-cards-row { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 700px) {
+  .kpi-strip { grid-template-columns: 1fr 1fr; }
+  .chart-row-2, .chart-row-3 { grid-template-columns: 1fr; }
+  .stat-cards-row { grid-template-columns: 1fr; }
+  .topnav-title span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading-bar"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="logo-circle">AOL</div>
+  <div class="topnav-title">
+    National Owner Dashboard
+    <span>NGO Wellness Programs</span>
+  </div>
+  <select class="fy-select" id="fy-select" onchange="setFY(this.value)">
+    <option value="fy2425">FY 2024-25</option>
+    <option value="fy2324">FY 2023-24</option>
+    <option value="fy2223">FY 2022-23</option>
+  </select>
+  <div class="view-toggle">
+    <button class="active" onclick="switchView('exec',this)">Executive View</button>
+    <button onclick="switchView('story',this)">Story View</button>
+  </div>
+</nav>
+
+<!-- FILTER BAR (exec only) -->
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">Segment:</span>
+  <span class="chip active" onclick="setSegment('all',this)">All Programs</span>
+  <span class="chip" onclick="setSegment('adult',this)">Adult (18+)</span>
+  <span class="chip" onclick="setSegment('children',this)">Children (&lt;18)</span>
+  <span class="chip" onclick="setSegment('institutional',this)">Institutional</span>
+</div>
+
+<!-- EXECUTIVE VIEW -->
+<div class="view active" id="view-exec">
+  <div class="page-body">
+
+    <div class="section-header" id="exec-section-header">National Key Performance Indicators — FY 2024-25</div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip" id="kpi-strip">
+      <div class="kpi-card" id="kpi0">
+        <div class="kpi-name" id="kpi0-name">Unique Participants</div>
+        <div class="kpi-number" id="kpi0-num">14,230</div>
+        <span class="kpi-change up" id="kpi0-chg"><span>▲</span> 12.1% YoY</span>
+      </div>
+      <div class="kpi-card" id="kpi1">
+        <div class="kpi-name" id="kpi1-name">Engaged Participants</div>
+        <div class="kpi-number" id="kpi1-num">5,410</div>
+        <span class="kpi-change up" id="kpi1-chg"><span>▲</span> 8.0% YoY</span>
+      </div>
+      <div class="kpi-card" id="kpi2">
+        <div class="kpi-name" id="kpi2-name">Progressed Participants</div>
+        <div class="kpi-number" id="kpi2-num">1,870</div>
+        <span class="kpi-change up" id="kpi2-chg"><span>▲</span> 14.7% YoY</span>
+      </div>
+      <div class="kpi-card" id="kpi3">
+        <div class="kpi-name" id="kpi3-name">Active Teachers</div>
+        <div class="kpi-number" id="kpi3-num">342</div>
+        <span class="kpi-change down" id="kpi3-chg"><span>▼</span> 2.8% YoY</span>
+      </div>
+      <div class="kpi-card" id="kpi4">
+        <div class="kpi-name" id="kpi4-name">Single-Touch Pax</div>
+        <div class="kpi-number" id="kpi4-num">5,420</div>
+        <span class="kpi-change up" id="kpi4-chg"><span>▲</span> 8.4% YoY</span>
+      </div>
+    </div>
+
+    <!-- ROW 1: Retention + Teacher Health -->
+    <div class="section-header" style="margin-top:28px;">Retention &amp; Teacher Health</div>
+    <div class="chart-row-2">
+      <div class="chart-card">
+        <div class="chart-title" id="retention-title">Cohort Retention Curve</div>
+        <div class="chart-subtitle" id="retention-sub">% of cohort still active at each year mark</div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="retentionChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Teacher Health Breakdown</div>
+        <div class="chart-subtitle" id="teacher-health-sub">Active teachers by engagement status</div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="teacherHealthChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ROW 2: Donut + PPT + Pareto -->
+    <div class="section-header" style="margin-top:28px;">Program Mix &amp; Teacher Productivity</div>
+    <div class="chart-row-3">
+      <div class="chart-card">
+        <div class="chart-title" id="donut-title">Program Concentration</div>
+        <div class="chart-subtitle">Share of participant volume by program type</div>
+        <div class="chart-wrap" style="height:210px;"><canvas id="programDonutChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Participants per Teacher per FY</div>
+        <div class="chart-subtitle">Average teacher throughput, year over year</div>
+        <div class="chart-wrap" style="height:210px;"><canvas id="pptChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title" id="pareto-title">Teacher Pareto Distribution</div>
+        <div class="chart-subtitle" id="pareto-sub">Participant volume delivered by teacher tier</div>
+        <div class="chart-callout" id="pareto-callout">Top 20% of teachers deliver 74% of total volume</div>
+        <div class="chart-wrap" style="height:150px;"><canvas id="paretoChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Scorecard Tables -->
+    <div class="section-header" style="margin-top:28px;">Detailed Scorecards</div>
+    <div class="scorecard-grid">
+      <div class="scorecard-card">
+        <div class="scorecard-title" id="sc-left-title">Overall Participant Health</div>
+        <table class="sc-table" id="sc-left-table">
+          <thead><tr><th>Metric</th><th>This FY</th><th>Last FY</th><th>Change</th></tr></thead>
+          <tbody id="sc-left-body"></tbody>
+        </table>
+      </div>
+      <div class="scorecard-card">
+        <div class="scorecard-title" id="sc-right-title">Teacher Pipeline</div>
+        <table class="sc-table" id="sc-right-table">
+          <thead><tr><th>Metric</th><th>This FY</th><th>Last FY</th><th>Change</th></tr></thead>
+          <tbody id="sc-right-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="height:32px;"></div>
+  </div>
+</div>
+
+<!-- STORY VIEW -->
+<div class="view" id="view-story">
+
+  <div class="story-header">
+    <div style="font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.5;margin-bottom:7px;font-weight:600;">Annual Report</div>
+    <h1 id="story-h1">FY 2024-25 — Owner's Annual Report</h1>
+    <div class="fy-sub">Art of Living Foundation · National Overview · Wellness &amp; Mindfulness Programs</div>
+    <div class="story-fy-badge" id="story-fy-badge">Viewing: FY 2024-25</div>
+  </div>
+
+  <div class="story-body">
+
+    <!-- Chapter 1: REACH -->
+    <div class="chapter">
+      <div class="chapter-label">Chapter 1 · Reach</div>
+      <div class="chapter-title">How many people did we touch this year?</div>
+      <div class="chapter-question">"Every number here is a person who chose to invest time in their own well-being."</div>
+
+      <div class="stat-cards-row">
+        <div class="stat-card">
+          <div class="stat-card-label">Adult Programs</div>
+          <div class="stat-card-number" id="s-adult-pax">9,200</div>
+          <div class="stat-card-sub">Unique participants</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Children Programs</div>
+          <div class="stat-card-number" id="s-child-pax">3,100</div>
+          <div class="stat-card-sub">Unique participants</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Institutional</div>
+          <div class="stat-card-number" id="s-inst-pax">2,930</div>
+          <div class="stat-card-sub">Reached via institutions</div>
+        </div>
+      </div>
+
+      <div class="story-note" id="s-reach-note">
+        <strong>Total unique participants: 14,230</strong> — up <strong style="color:var(--green)">12.1%</strong> from last year (12,700). Fastest growth segment: Institutional, up 72.4%.
+      </div>
+    </div>
+
+    <!-- Chapter 2: TEACHER PIPELINE -->
+    <div class="chapter">
+      <div class="chapter-label">Chapter 2 · Teacher Pipeline</div>
+      <div class="chapter-title">Who is delivering?</div>
+      <div class="chapter-question">"Teachers are the irreplaceable last mile. Without them, nothing reaches the participant."</div>
+
+      <div class="story-stats-row">
+        <div class="story-stat-mini">
+          <div class="val" id="s-active-teachers">342</div>
+          <div class="lbl">Active Teachers</div>
+          <div class="badge-amber" id="s-active-teachers-badge">▼ 2.8% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-newly-activated">55</div>
+          <div class="lbl">Newly Activated</div>
+          <div class="badge-green">this FY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-activation-rate">68%</div>
+          <div class="lbl">Activation Rate</div>
+          <div class="badge-green" id="s-activation-rate-badge">▲ from 61%</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-consistent-teachers">198</div>
+          <div class="lbl">Consistent Teachers</div>
+          <div class="badge-green" id="s-consistent-pct">58% of active</div>
+        </div>
+      </div>
+
+      <div class="story-chart-wrap">
+        <div class="story-chart-title" id="s-teacher-chart-title">Teacher Health Breakdown — 342 Active Teachers</div>
+        <div style="height:175px;"><canvas id="teacherHealthStory"></canvas></div>
+      </div>
+
+      <div class="alert-box" style="border-color:var(--red); background:#fff0f0; color:#7a1c1c;">
+        <div class="alert-icon">🚨</div>
+        <div><strong>Hyper-Concentration Alert:</strong> Top 20% of teachers are delivering 74% of participant volume. This creates systemic risk — if key teachers become unavailable, output drops sharply. Recommend urgently broadening the active teacher base.</div>
+      </div>
+    </div>
+
+    <!-- Chapter 3: ENGAGEMENT -->
+    <div class="chapter">
+      <div class="chapter-label">Chapter 3 · Engagement</div>
+      <div class="chapter-title">Who came back for more?</div>
+      <div class="chapter-question">"Reach matters, but return tells us whether the experience resonated."</div>
+
+      <div class="story-stats-row">
+        <div class="story-stat-mini">
+          <div class="val" id="s-engaged">5,410</div>
+          <div class="lbl">Engaged Participants</div>
+          <div class="badge-green" id="s-engaged-badge">▲ 8.0% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-eng-rate">38%</div>
+          <div class="lbl">Engagement Rate</div>
+          <div class="badge-green">of unique base</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-single-touch">5,420</div>
+          <div class="lbl">Single-Touch</div>
+          <div class="badge-amber">returned 0 times</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-power-pax">890</div>
+          <div class="lbl">Power Participants</div>
+          <div class="badge-green">3+ courses</div>
+        </div>
+      </div>
+
+      <div class="engagement-bar-wrap">
+        <div class="engagement-bar-label" id="s-bar-label">Participant Split — 14,230 total</div>
+        <div class="h-bar" id="s-eng-bar">
+          <div class="h-bar-seg" id="s-bar-eng" style="width:38%; background:#2ecc71;">Engaged 38%</div>
+          <div class="h-bar-seg" id="s-bar-st"  style="width:38%; background:#8e9ecb;">Single-Touch 38%</div>
+          <div class="h-bar-seg" id="s-bar-pow" style="width:6.3%; background:#f39c12;">Power 6%</div>
+          <div class="h-bar-seg" id="s-bar-oth" style="width:17.7%; background:#c0cce0;"></div>
+        </div>
+        <div class="h-bar-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#2ecc71;"></div><span id="s-leg-eng">Engaged (5,410)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8e9ecb;"></div><span id="s-leg-st">Single-Touch (5,420)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f39c12;"></div><span id="s-leg-pow">Power Participants (890)</span></div>
+        </div>
+      </div>
+
+      <div class="story-note" id="s-eng-note">
+        <strong>890 Power Participants</strong> (3+ courses) are your prime volunteer and teacher pipeline. That's 6.3% of participants delivering outsized community impact.
+      </div>
+    </div>
+
+    <!-- Chapter 4: PROGRESSION -->
+    <div class="chapter">
+      <div class="chapter-label">Chapter 4 · Progression</div>
+      <div class="chapter-title">Who moved up?</div>
+      <div class="chapter-question">"Progression signals deeper commitment — from participation to practice."</div>
+
+      <div class="story-stats-row">
+        <div class="story-stat-mini">
+          <div class="val" id="s-progressed">1,870</div>
+          <div class="lbl">Progressed Participants</div>
+          <div class="badge-green" id="s-prog-badge">▲ 14.7% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-prog-rate">13.1%</div>
+          <div class="lbl">Progression Rate</div>
+          <div class="badge-green">of unique base</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-ttp-days">187</div>
+          <div class="lbl">Avg Days to Progress</div>
+          <div class="badge-green" id="s-ttp-badge">▼ from 210 days</div>
+        </div>
+      </div>
+
+      <div class="story-chart-wrap">
+        <div class="story-chart-title">Cohort Retention Curve — % of cohort still active</div>
+        <div style="height:210px;"><canvas id="retentionChartStory"></canvas></div>
+      </div>
+
+      <div class="callout-box" id="s-cohort-callout">
+        <div class="callout-icon">🌱</div>
+        <div class="callout-text" id="s-cohort-callout-text">
+          <strong>FY22-23 cohort: 41% still active after 2 years.</strong> Nearly half of participants from two years ago continue engaging — a strong signal of long-term stickiness, well above industry norms for wellness programs.
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter 5: INSTITUTION REACH -->
+    <div class="chapter">
+      <div class="chapter-label">Chapter 5 · Institution Reach</div>
+      <div class="chapter-title">How deep are we in institutions?</div>
+      <div class="chapter-question">"Institutions multiply our reach — one MOU can touch hundreds of lives annually."</div>
+
+      <div class="story-stats-row">
+        <div class="story-stat-mini">
+          <div class="val" id="s-total-mous">118</div>
+          <div class="lbl">Total MOUs Signed</div>
+          <div class="badge-green" id="s-mou-badge">▲ 22.9% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-active-mous">89</div>
+          <div class="lbl">Active MOUs</div>
+          <div class="badge-green" id="s-active-mou-badge">▲ 25.4% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-zero-mous">29</div>
+          <div class="lbl">Zero-Course MOUs</div>
+          <div class="badge-amber">needs follow-up</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-mou-lag">34</div>
+          <div class="lbl">Days to First Course</div>
+          <div class="badge-green" id="s-lag-badge">▼ from 41 days</div>
+        </div>
+      </div>
+
+      <div class="story-chart-wrap">
+        <div class="story-chart-title" id="s-depth-title">Average Behavioral Depth Score — 2.6 out of 4</div>
+        <div class="score-gauge-wrap">
+          <div class="score-gauge-track">
+            <div class="score-gauge-fill" id="s-depth-fill" style="width:65%;">2.6</div>
+          </div>
+          <div class="score-gauge-labels">
+            <span>0 — No depth</span><span>1</span><span>2</span><span>3</span><span>4 — Full depth</span>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:7px;" id="s-depth-note">Score improved from 2.2/4 last year — a gain of 18.2%. Target: reach 3.0/4 by FY 2025-26.</div>
+      </div>
+
+      <div class="alert-box" id="s-zero-mou-alert">
+        <div class="alert-icon">⚠️</div>
+        <div><strong id="s-zero-alert-text">29 institutions have signed MOUs but run zero courses.</strong> These represent untapped capacity. Priority action: assign a dedicated teacher and schedule a kickoff session within 30 days.</div>
+      </div>
+    </div>
+
+    <!-- Chapter 6: PIPELINE HEALTH -->
+    <div class="chapter">
+      <div class="chapter-label">Chapter 6 · Pipeline Health</div>
+      <div class="chapter-title">Are we building for the future?</div>
+      <div class="chapter-question">"The pipeline today is the teaching capacity of tomorrow."</div>
+
+      <div class="story-stats-row">
+        <div class="story-stat-mini">
+          <div class="val" id="s-ttp">87</div>
+          <div class="lbl">TTP Graduates</div>
+          <div class="badge-green" id="s-ttp-yoy">▲ 20.8% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-vtp">134</div>
+          <div class="lbl">VTP Graduates</div>
+          <div class="badge-green" id="s-vtp-yoy">▲ 13.6% YoY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-pax-conv">2.4%</div>
+          <div class="lbl">Pax-to-Teacher Conversion</div>
+          <div class="badge-green" id="s-pax-conv-badge">▲ from 1.9%</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-vtp-ttp">18%</div>
+          <div class="lbl">VTP→TTP Conversion</div>
+          <div class="badge-green" id="s-vtp-ttp-badge">▲ from 14%</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-lapsed">67</div>
+          <div class="lbl">Lapsed Teachers</div>
+          <div class="badge-green" id="s-lapsed-badge">▼ from 82</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-reactivated">23</div>
+          <div class="lbl">Reactivated Teachers</div>
+          <div class="badge-green" id="s-react-badge">▲ 64.3% YoY</div>
+        </div>
+      </div>
+
+      <div class="story-note" id="s-pipeline-note">
+        Pax-to-Teacher conversion has improved to <strong>2.4%</strong> — working toward a medium-term target of 4–5%. VTP→TTP pipeline at 18% shows growing commitment. Lapsed teacher count dropping from 82 to 67 is a positive sign, reinforced by 23 successful reactivations.
+      </div>
+
+      <div class="callout-box" style="margin-top:14px;">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-text" id="s-pipeline-callout">
+          <strong>Key focus area for FY 2025-26:</strong> Close the hyper-concentration gap by activating 40+ additional consistent teachers from the VTP graduate pool and converting at least 25% of newly trained TTPs within their first year.
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DATA LAYER
+═══════════════════════════════════════════════ */
+const DATA = {
+  fy2223: {
+    all: {
+      uniquePax: 10200, engaged: 3800, progressed: 1300, singleTouch: 4500,
+      powerPax: 620, activeTeachers: 353, activeMOUs: 78, zeroCourseM: 22,
+      totalMOUs: 78, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
+      schools: 48, colleges: 30, mouLag: 52,
+      ttpGrads: 58, vtpGrads: 98, activationRate: 54, timeToFirstCourse: 71,
+      paxToTeacher: 1.4, vtpToTtp: 10, lapsedTeachers: 82, reactivated: 8,
+      hyperConc: true, pptAll: 28, ttpDays: 230
+    },
+    adult: {
+      uniquePax: 6800, engaged: 2400, progressed: 820, singleTouch: 3200,
+      powerPax: 480, activeTeachers: 190, activeMOUs: null, zeroCourseM: null,
+      pptAll: 31, ttpDays: 230
+    },
+    children: {
+      uniquePax: 2300, engaged: 720, progressed: 290, singleTouch: 1400,
+      powerPax: 82, activeTeachers: 88, activeMOUs: null, zeroCourseM: null,
+      pptAll: 24, ttpDays: null
+    },
+    institutional: {
+      uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
+      activeTeachers: 120, activeMOUs: 63, zeroCourseM: 22, totalMOUs: 78,
+      schools: 48, colleges: 30, mouLag: 52, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
+      pptAll: 8
+    },
+    teacherHealth: { consistent: 185, inconsistent: 95, newlyActivated: 48, lapsed: 82, reactivated: 11 },
+    programMix: {
+      all: { labels:['YesPlus','IP','Adult Entry','Children Entry','Other'], data:[27,20,26,13,14] },
+      adult: { labels:['YesPlus','IP Adults','Other Adult Entry','Other'], data:[38,29,18,15] },
+      children: { labels:['IP Program','Children Higher','Other Entry'], data:[59,21,20] },
+      institutional: { labels:['YesPlus (Colleges)','IP/Entry (Schools)'], data:[44,56] }
+    },
+    cohortRetention: {
+      all:     { fy2223:[100,62,41], fy2324:[100,null,null], fy2425:[null,null,null] },
+      adult:   { fy2223:[100,60,39], fy2324:[100,null,null], fy2425:[null,null,null] },
+      children:{ fy2223:[100,58,36], fy2324:[100,null,null], fy2425:[null,null,null] },
+      institutional:{ fy2223:[1.0,1.8,2.1], fy2324:[1.0,null,null], fy2425:[null,null,null] }
+    }
+  },
+  fy2324: {
+    all: {
+      uniquePax: 12700, engaged: 5010, progressed: 1630, singleTouch: 5000,
+      powerPax: 770, activeTeachers: 352, activeMOUs: 96, zeroCourseM: 25,
+      totalMOUs: 96, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
+      schools: 61, colleges: 35, mouLag: 41,
+      ttpGrads: 72, vtpGrads: 118, activationRate: 61, timeToFirstCourse: 58,
+      paxToTeacher: 1.9, vtpToTtp: 14, lapsedTeachers: 76, reactivated: 14,
+      hyperConc: true, pptAll: 32, ttpDays: 210
+    },
+    adult: {
+      uniquePax: 8100, engaged: 2800, progressed: 980, singleTouch: 4300,
+      powerPax: 620, activeTeachers: 198, activeMOUs: null, zeroCourseM: null,
+      pptAll: 35, ttpDays: 210
+    },
+    children: {
+      uniquePax: 2900, engaged: 860, progressed: 370, singleTouch: 1740,
+      powerPax: 98, activeTeachers: 92, activeMOUs: null, zeroCourseM: null,
+      pptAll: 28, ttpDays: null
+    },
+    institutional: {
+      uniquePax: 1700, engaged: 1350, progressed: 280, singleTouch: null,
+      activeTeachers: 130, activeMOUs: 71, zeroCourseM: 25, totalMOUs: 96,
+      schools: 61, colleges: 35, mouLag: 41, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
+      pptAll: 11
+    },
+    teacherHealth: { consistent: 192, inconsistent: 92, newlyActivated: 51, lapsed: 76, reactivated: 17 },
+    programMix: {
+      all: { labels:['YesPlus','IP','Adult Entry','Children Entry','Other'], data:[27,21,25,13,14] },
+      adult: { labels:['YesPlus','IP Adults','Other Adult Entry','Other'], data:[38,29,18,15] },
+      children: { labels:['IP Program','Children Higher','Other Entry'], data:[59,21,20] },
+      institutional: { labels:['YesPlus (Colleges)','IP/Entry (Schools)'], data:[44,56] }
+    },
+    cohortRetention: {
+      all:     { fy2223:[100,62,41], fy2324:[100,58,null], fy2425:[null,null,null] },
+      adult:   { fy2223:[100,60,39], fy2324:[100,56,null], fy2425:[null,null,null] },
+      children:{ fy2223:[100,58,36], fy2324:[100,54,null], fy2425:[null,null,null] },
+      institutional:{ fy2223:[1.0,1.8,2.1], fy2324:[1.0,2.2,null], fy2425:[null,null,null] }
+    }
+  },
+  fy2425: {
+    all: {
+      uniquePax: 14230, engaged: 5410, progressed: 1870, singleTouch: 5420,
+      powerPax: 890, activeTeachers: 342, activeMOUs: 118, zeroCourseM: 29,
+      totalMOUs: 118, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
+      schools: 74, colleges: 44, mouLag: 34,
+      ttpGrads: 87, vtpGrads: 134, activationRate: 68, timeToFirstCourse: 42,
+      paxToTeacher: 2.4, vtpToTtp: 18, lapsedTeachers: 67, reactivated: 23,
+      hyperConc: true, pptAll: 35, ttpDays: 187
+    },
+    adult: {
+      uniquePax: 9200, engaged: 3100, progressed: 1200, singleTouch: 4800,
+      powerPax: 890, activeTeachers: 210, activeMOUs: null, zeroCourseM: null,
+      pptAll: 40, ttpDays: 187
+    },
+    children: {
+      uniquePax: 3100, engaged: 980, progressed: 420, singleTouch: 1820,
+      powerPax: 116, activeTeachers: 95, activeMOUs: null, zeroCourseM: null,
+      pptAll: 31, ttpDays: null
+    },
+    institutional: {
+      uniquePax: 2930, engaged: 1330, progressed: 250, singleTouch: null,
+      activeTeachers: 145, activeMOUs: 89, zeroCourseM: 29, totalMOUs: 118,
+      schools: 74, colleges: 44, mouLag: 34, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
+      pptAll: 18
+    },
+    teacherHealth: { consistent: 198, inconsistent: 89, newlyActivated: 55, lapsed: 67, reactivated: 23 },
+    programMix: {
+      all: { labels:['YesPlus','IP','Adult Entry','Children Entry','Other'], data:[27,20,26,13,14] },
+      adult: { labels:['YesPlus','IP Adults','Other Adult Entry','Other'], data:[38,29,18,15] },
+      children: { labels:['IP Program','Children Higher','Other Entry'], data:[59,21,20] },
+      institutional: { labels:['YesPlus (Colleges)','IP/Entry (Schools)'], data:[44,56] }
+    },
+    cohortRetention: {
+      all:     { fy2223:[100,62,41], fy2324:[100,58,null], fy2425:[100,null,null] },
+      adult:   { fy2223:[100,60,39], fy2324:[100,56,null], fy2425:[100,null,null] },
+      children:{ fy2223:[100,58,36], fy2324:[100,54,null], fy2425:[100,null,null] },
+      institutional:{ fy2223:[1.0,1.8,2.1], fy2324:[1.0,2.2,null], fy2425:[1.0,null,null] }
+    }
+  }
+};
+
+const FY_ORDER = ['fy2223','fy2324','fy2425'];
+const FY_LABELS = { fy2223:'FY 2022-23', fy2324:'FY 2023-24', fy2425:'FY 2024-25' };
+const PREV_FY   = { fy2223:null, fy2324:'fy2223', fy2425:'fy2324' };
+
+/* Teacher data — per FY (not segment-filtered by participant type) */
+const TEACHER_PIPELINE = {
+  fy2223: { ttpGrads:58, vtpGrads:98, activationRate:54, timeToFirstCourse:71,
+             paxToTeacher:1.4, vtpToTtp:10, lapsedTeachers:82, reactivated:8, hyperConc:true },
+  fy2324: { ttpGrads:72, vtpGrads:118, activationRate:61, timeToFirstCourse:58,
+             paxToTeacher:1.9, vtpToTtp:14, lapsedTeachers:76, reactivated:14, hyperConc:true },
+  fy2425: { ttpGrads:87, vtpGrads:134, activationRate:68, timeToFirstCourse:42,
+             paxToTeacher:2.4, vtpToTtp:18, lapsedTeachers:67, reactivated:23, hyperConc:true }
+};
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let currentFY = 'fy2425';
+let currentSegment = 'all';
+
+/* Chart instance registry — destroy before recreate */
+const charts = {};
+
+function destroyChart(id) {
+  if (charts[id]) { try { charts[id].destroy(); } catch(e){} delete charts[id]; }
+}
+
+/* ═══════════════════════════════════════════════
+   FLASH LOADING BAR
+═══════════════════════════════════════════════ */
+function flashLoad() {
+  const bar = document.getElementById('loading-bar');
+  bar.classList.remove('running');
+  void bar.offsetWidth; // reflow
+  bar.classList.add('running');
+  setTimeout(() => { bar.classList.remove('running'); bar.style.width='0%'; }, 700);
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN ENTRY POINTS
+═══════════════════════════════════════════════ */
+function setFY(fy) {
+  currentFY = fy;
+  flashLoad();
+  update();
+  updateStoryView();
+}
+
+function setSegment(seg, el) {
+  currentSegment = seg;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  flashLoad();
+  update();
+}
+
+function switchView(v, btn) {
+  document.getElementById('view-exec').classList.toggle('active', v === 'exec');
+  document.getElementById('view-story').classList.toggle('active', v === 'story');
+  document.getElementById('filter-bar').style.display = v === 'exec' ? 'flex' : 'none';
+  document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (v === 'story') { updateStoryView(); }
+}
+
+function update() {
+  updateKPIs();
+  updateCharts();
+  updateTables();
+}
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+function fmt(n) {
+  if (n === null || n === undefined) return '—';
+  return n.toLocaleString();
+}
+
+function pct(curr, prev, decimals=1) {
+  if (prev === null || prev === undefined || prev === 0) return null;
+  return +((curr - prev) / prev * 100).toFixed(decimals);
+}
+
+function yoyBadge(curr, prev, lowerIsBetter=false) {
+  if (prev === null || prev === undefined) return { cls:'none', text:'—' };
+  const p = pct(curr, prev);
+  const sign = p > 0 ? '▲' : (p < 0 ? '▼' : '→');
+  const absP = Math.abs(p).toFixed(1) + '%';
+  const text = sign + ' ' + absP + ' YoY';
+  // for "lower is better" metrics, going down is green
+  let cls;
+  if (lowerIsBetter) {
+    cls = p < 0 ? 'up' : (p > 0 ? 'down' : 'neu');
+  } else {
+    cls = p > 0 ? 'up' : (p < 0 ? 'down' : 'neu');
+  }
+  if (p === 0) cls = 'neu';
+  return { cls, text };
+}
+
+function renderBadge(curr, prev, lowerIsBetter=false) {
+  const b = yoyBadge(curr, prev, lowerIsBetter);
+  return `<span class="kpi-change ${b.cls}">${b.text}</span>`;
+}
+
+function scChange(curr, prev, lowerIsBetter=false, suffix='') {
+  if (prev === null || prev === undefined) return '<span class="chg-none">—</span>';
+  const p = pct(curr, prev);
+  const sign = p > 0 ? '▲' : (p < 0 ? '▼' : '→');
+  const absP = Math.abs(p).toFixed(1) + '%' + suffix;
+  const text = sign + ' ' + absP;
+  let cls;
+  if (lowerIsBetter) { cls = p < 0 ? 'chg-up' : (p > 0 ? 'chg-down' : 'chg-neu'); }
+  else { cls = p > 0 ? 'chg-up' : (p < 0 ? 'chg-down' : 'chg-neu'); }
+  if (p === 0) cls = 'chg-neu';
+  return `<span class="${cls}">${text}</span>`;
+}
+
+function getD(fy, seg) { return DATA[fy] ? DATA[fy][seg] || {} : {}; }
+function getPrevFY() { return PREV_FY[currentFY]; }
+
+/* ═══════════════════════════════════════════════
+   KPI STRIP
+═══════════════════════════════════════════════ */
+function updateKPIs() {
+  const fy = currentFY;
+  const seg = currentSegment;
+  const d = getD(fy, seg);
+  const pFY = getPrevFY();
+  const pd = pFY ? getD(pFY, seg) : {};
+  const fyLabel = FY_LABELS[fy];
+
+  document.getElementById('exec-section-header').textContent =
+    (seg === 'all' ? 'National' : seg.charAt(0).toUpperCase()+seg.slice(1)) +
+    ' Key Performance Indicators — ' + fyLabel;
+
+  if (seg === 'institutional') {
+    // Institutional KPIs: Unique Pax, Active MOUs, Zero-Course MOUs, Avg Depth Score, Avg Courses/Inst
+    setKPI(0, 'Unique Pax (via Institutions)', d.uniquePax, pFY ? pd.uniquePax : null, false);
+    setKPI(1, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false);
+    setKPI(2, 'Zero-Course MOUs', d.zeroCourseM, pFY ? pd.zeroCourseM : null, true, true);
+    setKPI(3, 'Avg Behavioral Depth Score', d.avgDepthScore ? d.avgDepthScore+'/4' : '—', null, false, false, true);
+    setKPI(4, 'Avg Courses / Institution', d.avgCoursesPerInst, pFY ? pd.avgCoursesPerInst : null, false);
+  } else {
+    // All / Adult / Children KPIs
+    setKPI(0, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false);
+    setKPI(1, 'Engaged Participants', d.engaged, pFY ? pd.engaged : null, false);
+    setKPI(2, 'Progressed Participants', d.progressed, pFY ? pd.progressed : null, false);
+    setKPI(3, 'Active Teachers', d.activeTeachers, pFY ? pd.activeTeachers : null, false);
+    setKPI(4, 'Single-Touch Pax', d.singleTouch, pFY ? pd.singleTouch : null, true);
+  }
+}
+
+function setKPI(idx, name, curr, prev, lowerIsBetter=false, redAccent=false, rawDisplay=false) {
+  const card = document.getElementById('kpi'+idx);
+  card.className = 'kpi-card' + (redAccent ? ' accent-red' : '');
+  document.getElementById('kpi'+idx+'-name').textContent = name;
+  const numEl = document.getElementById('kpi'+idx+'-num');
+  if (rawDisplay) {
+    numEl.textContent = curr || '—';
+  } else {
+    numEl.textContent = (curr !== null && curr !== undefined) ? fmt(curr) : '—';
+  }
+  const chgEl = document.getElementById('kpi'+idx+'-chg');
+  if (prev !== null && prev !== undefined && !rawDisplay) {
+    const b = yoyBadge(curr, prev, lowerIsBetter);
+    chgEl.className = 'kpi-change ' + b.cls;
+    chgEl.innerHTML = b.text;
+  } else {
+    chgEl.className = 'kpi-change none';
+    chgEl.innerHTML = '—';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════ */
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#5a6a8a';
+
+const C = {
+  navy:'#1a2744', green:'#2ecc71', red:'#e74c3c', amber:'#f39c12',
+  blue1:'#3b82f6', blue2:'#60a5fa', blue3:'#93c5fd', grey:'#c0cce0',
+  mid:'#8e9ecb'
+};
+
+function updateCharts() {
+  renderRetentionChart();
+  renderTeacherHealthChart();
+  renderProgramDonut();
+  renderPPTChart();
+  renderParetoChart();
+}
+
+/* 1. COHORT RETENTION */
+function renderRetentionChart() {
+  destroyChart('retention');
+  const seg = currentSegment;
+  const fy = currentFY;
+  const isInst = seg === 'institutional';
+  const cr = DATA[fy].cohortRetention[seg];
+
+  const labels = ['FY+0','FY+1','FY+2'];
+  const yLabel = isInst ? 'Avg courses / active inst.' : '% retained';
+  const yMax   = isInst ? 4 : 110;
+  const tickCb = isInst ? v => v.toFixed(1) : v => v+'%';
+
+  const mkDs = (key, label, color, dash=[]) => ({
+    label, data: cr[key],
+    borderColor: color,
+    backgroundColor: dash.length ? 'transparent' : color+'18',
+    borderWidth: 2.5,
+    borderDash: dash,
+    pointRadius: 4,
+    pointBackgroundColor: color,
+    tension: 0.3,
+    fill: !dash.length,
+    spanGaps: false
+  });
+
+  const datasets = [
+    mkDs('fy2223', FY_LABELS.fy2223, C.navy),
+    mkDs('fy2324', FY_LABELS.fy2324, C.blue1, [5,4]),
+    mkDs('fy2425', FY_LABELS.fy2425, C.green, [8,4])
+  ];
+
+  // Only show cohorts that have been selected (current FY and earlier)
+  const fyIdx = FY_ORDER.indexOf(fy);
+  const filteredDs = datasets.slice(0, fyIdx + 1);
+
+  const ctx = document.getElementById('retentionChart');
+  charts['retention'] = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: filteredDs },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{ boxWidth:12, padding:10 } },
+        tooltip: { mode:'index', intersect:false }
+      },
+      scales: {
+        y: { min:0, max:yMax, ticks:{ callback:tickCb, stepSize: isInst?1:20 }, grid:{ color:'#e8ecf4' } },
+        x: { grid:{ display:false } }
+      }
+    }
+  });
+
+  const titleEl = document.getElementById('retention-title');
+  const subEl   = document.getElementById('retention-sub');
+  titleEl.textContent = isInst ? 'Institutional Cohort Depth' : 'Cohort Retention Curve';
+  subEl.textContent   = isInst ? 'Avg courses per active institution by cohort year' : '% of cohort still active at each year mark';
+}
+
+/* 2. TEACHER HEALTH */
+function renderTeacherHealthChart() {
+  destroyChart('teacherHealth');
+  const fy = currentFY;
+  const th = DATA[fy].teacherHealth;
+  const total = th.consistent + th.inconsistent + th.newlyActivated + th.lapsed + th.reactivated;
+  document.getElementById('teacher-health-sub').textContent =
+    total + ' active teachers by engagement status';
+
+  const ctx = document.getElementById('teacherHealthChart');
+  charts['teacherHealth'] = new Chart(ctx, {
+    type:'bar',
+    data: {
+      labels:['Active & Consistent','Active Inconsistent','Newly Activated','Lapsed','Reactivated'],
+      datasets:[{
+        data:[th.consistent, th.inconsistent, th.newlyActivated, th.lapsed, th.reactivated],
+        backgroundColor:[C.green, C.blue1, C.blue2, C.red, C.amber],
+        borderRadius:5, borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:ctx=>' '+ctx.parsed.x+' teachers' } } },
+      scales:{ x:{ grid:{color:'#e8ecf4'} }, y:{ grid:{display:false} } }
+    }
+  });
+}
+
+/* 3. PROGRAM DONUT */
+function renderProgramDonut() {
+  destroyChart('programDonut');
+  const fy = currentFY;
+  const seg = currentSegment;
+  const mix = DATA[fy].programMix[seg];
+
+  const bgColors = [C.navy, C.green, C.blue1, C.amber, C.grey, C.red];
+
+  document.getElementById('donut-title').textContent =
+    seg === 'institutional' ? 'Program Route Mix' :
+    seg === 'children'      ? 'Children Program Mix' :
+    seg === 'adult'         ? 'Adult Program Mix' : 'Program Concentration';
+
+  const ctx = document.getElementById('programDonutChart');
+  charts['programDonut'] = new Chart(ctx, {
+    type:'doughnut',
+    data:{
+      labels: mix.labels,
+      datasets:[{ data: mix.data, backgroundColor: bgColors.slice(0, mix.labels.length),
+                  borderWidth:2, borderColor:'#fff', hoverOffset:6 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'62%',
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:11, padding:8 } },
+        tooltip:{ callbacks:{ label:ctx=>' '+ctx.label+': '+ctx.parsed+'%' } }
+      }
+    }
+  });
+}
+
+/* 4. PARTICIPANTS PER TEACHER */
+function renderPPTChart() {
+  destroyChart('ppt');
+  const seg = currentSegment;
+  const vals = FY_ORDER.map(fy => DATA[fy][seg] ? DATA[fy][seg].pptAll : null).filter(v=>v!==null && v!==undefined);
+  const labels = FY_ORDER.slice(0, vals.length).map(f => FY_LABELS[f]);
+  const bgColors = [C.blue2, C.blue1, C.navy].slice(0, vals.length);
+
+  const ctx = document.getElementById('pptChart');
+  charts['ppt'] = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ label:'Participants / Teacher', data:vals, backgroundColor:bgColors, borderRadius:6, borderSkipped:false }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>' '+c.parsed.y+' participants per teacher' } } },
+      scales:{
+        y:{ min:0, grid:{color:'#e8ecf4'} },
+        x:{ grid:{display:false} }
+      }
+    }
+  });
+}
+
+/* 5. PARETO / TTP-VTP PIPELINE */
+function renderParetoChart() {
+  destroyChart('pareto');
+  const seg = currentSegment;
+  const fy  = currentFY;
+  const isInst = seg === 'institutional';
+  const titleEl   = document.getElementById('pareto-title');
+  const subEl     = document.getElementById('pareto-sub');
+  const calloutEl = document.getElementById('pareto-callout');
+  const ctx       = document.getElementById('paretoChart');
+
+  if (isInst) {
+    titleEl.textContent   = 'TTP vs VTP Pipeline';
+    subEl.textContent     = 'Graduates by training track, all years';
+    calloutEl.textContent = 'TTP: Teacher Training Program  |  VTP: Volunteer Training Program';
+
+    const ttpVals = FY_ORDER.map(f => TEACHER_PIPELINE[f].ttpGrads);
+    const vtpVals = FY_ORDER.map(f => TEACHER_PIPELINE[f].vtpGrads);
+    const labels  = FY_ORDER.map(f => FY_LABELS[f]);
+
+    charts['pareto'] = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels,
+        datasets:[
+          { label:'TTP Graduates', data:ttpVals, backgroundColor:C.navy, borderRadius:5 },
+          { label:'VTP Graduates', data:vtpVals, backgroundColor:C.green, borderRadius:5 }
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'bottom', labels:{ boxWidth:11, padding:8 } } },
+        scales:{ y:{ beginAtZero:true, grid:{color:'#e8ecf4'} }, x:{ grid:{display:false} } }
+      }
+    });
+  } else {
+    titleEl.textContent   = 'Teacher Pareto Distribution';
+    subEl.textContent     = 'Participant volume delivered by teacher tier';
+    calloutEl.textContent = 'Top 20% of teachers deliver 74% of total volume';
+
+    charts['pareto'] = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels:['Top 20%','Next 30%','Bottom 50%'],
+        datasets:[{
+          label:'% of volume',
+          data:[74,18,8],
+          backgroundColor:[C.red, C.amber, C.grey],
+          borderRadius:6, borderSkipped:false
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>' '+c.parsed.y+'% of total volume' } } },
+        scales:{
+          y:{ min:0, max:100, ticks:{ callback:v=>v+'%', stepSize:25 }, grid:{color:'#e8ecf4'} },
+          x:{ grid:{display:false} }
+        }
+      }
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SCORECARD TABLES
+═══════════════════════════════════════════════ */
+function updateTables() {
+  updateLeftTable();
+  updateRightTable();
+}
+
+function row(metric, curr, prev, lowerIsBetter=false, currFmt='', prevFmt='') {
+  const cStr = (curr !== null && curr !== undefined) ? (currFmt || fmt(curr)) : '—';
+  const pStr = (prev !== null && prev !== undefined) ? (prevFmt || fmt(prev)) : '—';
+  const chg  = (prev !== null && prev !== undefined && curr !== null && curr !== undefined)
+    ? scChange(curr, prev, lowerIsBetter) : '<span class="chg-none">—</span>';
+  return `<tr><td>${metric}</td><td>${cStr}</td><td>${pStr}</td><td>${chg}</td></tr>`;
+}
+
+function updateLeftTable() {
+  const fy  = currentFY;
+  const seg = currentSegment;
+  const d   = getD(fy, seg);
+  const pFY = getPrevFY();
+  const pd  = pFY ? getD(pFY, seg) : {};
+  const da  = getD(fy, 'all');
+  const pda = pFY ? getD(pFY, 'all') : {};
+  const fyLabel = FY_LABELS[fy];
+  const pLabel  = pFY ? FY_LABELS[pFY] : '—';
+
+  let title = 'Overall Participant Health';
+  let rows  = '';
+
+  if (seg === 'institutional') {
+    title = 'Institutional Health';
+    rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax);
+    rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs);
+    rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs);
+    rows += row('Schools', d.schools, pd.schools);
+    rows += row('Colleges', d.colleges, pd.colleges);
+    rows += row('Zero-Course MOUs', d.zeroCourseM, pd.zeroCourseM, true);
+    rows += row('MOU → First Course Lag (days)', d.mouLag, pd.mouLag, true, d.mouLag+'d', pd.mouLag ? pd.mouLag+'d' : '—');
+    rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst);
+    rows += row('Avg Behavioral Depth Score', d.avgDepthScore, pd.avgDepthScore,
+                false, d.avgDepthScore ? d.avgDepthScore+'/4' : '—', pd.avgDepthScore ? pd.avgDepthScore+'/4' : '—');
+  } else if (seg === 'children') {
+    title = 'Children Participant Health';
+    rows += row('Unique Participants', d.uniquePax, pd.uniquePax);
+    rows += row('IP Program Participants', d.engaged ? Math.round(d.uniquePax*0.59) : null,
+                pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null);
+    rows += row('Engaged (>1 course)', d.engaged, pd.engaged);
+    rows += row('Progressed', d.progressed, pd.progressed);
+    rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true);
+    rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
+  } else if (seg === 'adult') {
+    title = 'Adult Participant Health';
+    rows += row('Unique Participants', d.uniquePax, pd.uniquePax);
+    rows += row('Engaged (>1 course)', d.engaged, pd.engaged);
+    rows += row('Progressed', d.progressed, pd.progressed);
+    rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true);
+    rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
+    const ttpCurr = da.ttpDays; const ttpPrev = pda.ttpDays;
+    rows += row('Avg Time-to-Progression (days)', ttpCurr, ttpPrev, true, ttpCurr ? ttpCurr+'d' : '—', ttpPrev ? ttpPrev+'d' : '—');
+  } else {
+    // All
+    rows += row('Unique Participants', d.uniquePax, pd.uniquePax);
+    rows += row('Engaged Participants', d.engaged, pd.engaged);
+    rows += row('Progressed Participants', d.progressed, pd.progressed);
+    rows += row('Single-Touch Pax', d.singleTouch, pd.singleTouch, true);
+    rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
+    const ttpCurr = da.ttpDays; const ttpPrev = pda.ttpDays;
+    rows += row('Avg Time-to-Progression (days)', ttpCurr, ttpPrev, true, ttpCurr ? ttpCurr+'d' : '—', ttpPrev ? ttpPrev+'d' : '—');
+    rows += row('Active MOUs (Institutional)', da.activeMOUs, pda.activeMOUs);
+  }
+
+  document.getElementById('sc-left-title').textContent = title;
+  document.getElementById('sc-left-body').innerHTML = rows;
+}
+
+function updateRightTable() {
+  const fy  = currentFY;
+  const seg = currentSegment;
+  const pFY = getPrevFY();
+  const tp  = TEACHER_PIPELINE[fy];
+  const ptp = pFY ? TEACHER_PIPELINE[pFY] : {};
+  const th  = DATA[fy].teacherHealth;
+  const pth = pFY ? DATA[pFY].teacherHealth : {};
+
+  const prefix = seg === 'institutional' ? 'Institutional-Delivery ' : '';
+  document.getElementById('sc-right-title').textContent = prefix + 'Teacher Pipeline';
+
+  let rows = '';
+  rows += row('TTP Graduates', tp.ttpGrads, ptp.ttpGrads);
+  rows += row('VTP Graduates', tp.vtpGrads, ptp.vtpGrads);
+  rows += row('Activation Rate (within 1 FY)', tp.activationRate, ptp.activationRate,
+              false, tp.activationRate+'%', ptp.activationRate ? ptp.activationRate+'%' : '—');
+  rows += row('Time-to-First-Course (avg days)', tp.timeToFirstCourse, ptp.timeToFirstCourse, true,
+              tp.timeToFirstCourse ? tp.timeToFirstCourse+'d' : '—',
+              ptp.timeToFirstCourse ? ptp.timeToFirstCourse+'d' : '—');
+  rows += row('Pax-to-Teacher Conversion', tp.paxToTeacher, ptp.paxToTeacher,
+              false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—');
+  rows += row('VTP→TTP Conversion', tp.vtpToTtp, ptp.vtpToTtp,
+              false, tp.vtpToTtp+'%', ptp.vtpToTtp ? ptp.vtpToTtp+'%' : '—');
+  rows += row('Lapsed Teachers', th.lapsed, pth.lapsed, true);
+  rows += row('Reactivated Teachers', th.reactivated, pth.reactivated);
+
+  // Hyper-concentration flag
+  const flagCurr = tp.hyperConc;
+  const flagPrev = pFY ? TEACHER_PIPELINE[pFY].hyperConc : null;
+  const flagBadge = flagCurr
+    ? '<span class="flag-badge-yes">YES</span>'
+    : '<span class="flag-badge-no">NO</span>';
+  const prevBadge = flagPrev !== null
+    ? (flagPrev ? '<span class="flag-badge-yes">YES</span>' : '<span class="flag-badge-no">NO</span>')
+    : '—';
+  rows += `<tr class="${flagCurr ? 'flag-row' : ''}">
+    <td>Hyper-Concentration Flag</td>
+    <td style="text-align:right">${flagBadge}</td>
+    <td style="text-align:right">${prevBadge}</td>
+    <td style="text-align:right;color:#b45309;font-weight:700;">—</td>
+  </tr>`;
+
+  document.getElementById('sc-right-body').innerHTML = rows;
+}
+
+/* ═══════════════════════════════════════════════
+   STORY VIEW UPDATES
+═══════════════════════════════════════════════ */
+function updateStoryView() {
+  const fy  = currentFY;
+  const pFY = getPrevFY();
+  const d   = getD(fy, 'all');
+  const pd  = pFY ? getD(pFY, 'all') : {};
+  const tp  = TEACHER_PIPELINE[fy];
+  const ptp = pFY ? TEACHER_PIPELINE[pFY] : {};
+  const th  = DATA[fy].teacherHealth;
+  const pth = pFY ? DATA[pFY].teacherHealth : {};
+  const da  = getD(fy, 'adult');
+  const dc  = getD(fy, 'children');
+  const di  = getD(fy, 'institutional');
+  const fyLabel = FY_LABELS[fy];
+
+  /* Header */
+  document.getElementById('story-h1').textContent = fyLabel + ' — Owner\'s Annual Report';
+  document.getElementById('story-fy-badge').textContent = 'Viewing: ' + fyLabel;
+
+  /* Chapter 1: Reach */
+  document.getElementById('s-adult-pax').textContent = fmt(da.uniquePax);
+  document.getElementById('s-child-pax').textContent = fmt(dc.uniquePax);
+  document.getElementById('s-inst-pax').textContent  = fmt(di.uniquePax);
+  const instGrowth = pd.uniquePax ? ((d.uniquePax - pd.uniquePax)/pd.uniquePax*100).toFixed(1) : null;
+  const instSegPd = pFY ? getD(pFY, 'institutional') : {};
+  const instGrowthSeg = (instSegPd.uniquePax && di.uniquePax)
+    ? ((di.uniquePax - instSegPd.uniquePax)/instSegPd.uniquePax*100).toFixed(1) : null;
+  const allGrowthPct = pd.uniquePax ? ((d.uniquePax - pd.uniquePax)/pd.uniquePax*100).toFixed(1) : null;
+  document.getElementById('s-reach-note').innerHTML = pd.uniquePax
+    ? `<strong>Total unique participants: ${fmt(d.uniquePax)}</strong> — up <strong style="color:var(--green)">${allGrowthPct}%</strong> from last year (${fmt(pd.uniquePax)}). Fastest growth segment: Institutional${instGrowthSeg ? ', up '+instGrowthSeg+'%' : ''}.`
+    : `<strong>Total unique participants: ${fmt(d.uniquePax)}</strong> — first year of tracked data.`;
+
+  /* Chapter 2: Teacher Pipeline */
+  const totalTeachers = th.consistent + th.inconsistent + th.newlyActivated + th.lapsed + th.reactivated;
+  document.getElementById('s-active-teachers').textContent = totalTeachers;
+  document.getElementById('s-newly-activated').textContent = th.newlyActivated;
+  document.getElementById('s-activation-rate').textContent = tp.activationRate + '%';
+  document.getElementById('s-consistent-teachers').textContent = th.consistent;
+  const prevTotal = pFY ? (pth.consistent+pth.inconsistent+pth.newlyActivated+pth.lapsed+pth.reactivated) : null;
+  const teacherGrowth = prevTotal ? ((totalTeachers - prevTotal)/prevTotal*100).toFixed(1) : null;
+  const tBadge = document.getElementById('s-active-teachers-badge');
+  if (teacherGrowth) {
+    const up = parseFloat(teacherGrowth) >= 0;
+    tBadge.className = up ? 'badge-green' : 'badge-amber';
+    tBadge.textContent = (up ? '▲' : '▼') + ' ' + Math.abs(teacherGrowth) + '% YoY';
+  }
+  const prevRate = pFY ? TEACHER_PIPELINE[pFY].activationRate : null;
+  document.getElementById('s-activation-rate-badge').textContent = prevRate ? '▲ from '+prevRate+'%' : 'first year';
+  document.getElementById('s-consistent-pct').textContent = Math.round(th.consistent/totalTeachers*100) + '% of active';
+  document.getElementById('s-teacher-chart-title').textContent = 'Teacher Health Breakdown — ' + totalTeachers + ' Active Teachers';
+  renderStoryTeacherChart(th);
+
+  /* Chapter 3: Engagement */
+  document.getElementById('s-engaged').textContent   = fmt(d.engaged);
+  document.getElementById('s-single-touch').textContent = fmt(d.singleTouch);
+  document.getElementById('s-power-pax').textContent = fmt(d.powerPax);
+  const engRate  = d.uniquePax ? (d.engaged/d.uniquePax*100).toFixed(1) : 0;
+  const powRate  = d.uniquePax ? (d.powerPax/d.uniquePax*100).toFixed(1) : 0;
+  document.getElementById('s-eng-rate').textContent = engRate + '%';
+  const engGrowth = (pd.engaged && d.engaged) ? ((d.engaged - pd.engaged)/pd.engaged*100).toFixed(1) : null;
+  const eBadge = document.getElementById('s-engaged-badge');
+  if (engGrowth) { eBadge.textContent = (parseFloat(engGrowth)>=0?'▲':'▼')+' '+Math.abs(engGrowth)+'% YoY'; }
+  document.getElementById('s-bar-label').textContent = 'Participant Split — ' + fmt(d.uniquePax) + ' total';
+  const stPct  = d.uniquePax ? (d.singleTouch/d.uniquePax*100) : 0;
+  const powPct = d.uniquePax ? (d.powerPax/d.uniquePax*100) : 0;
+  const othPct = 100 - parseFloat(engRate) - stPct - powPct;
+  document.getElementById('s-bar-eng').style.width = engRate + '%';
+  document.getElementById('s-bar-eng').textContent = 'Engaged '+Math.round(engRate)+'%';
+  document.getElementById('s-bar-st').style.width  = stPct.toFixed(1) + '%';
+  document.getElementById('s-bar-st').textContent  = 'Single-Touch '+Math.round(stPct)+'%';
+  document.getElementById('s-bar-pow').style.width = powPct.toFixed(1) + '%';
+  document.getElementById('s-bar-pow').textContent = powPct >= 5 ? 'Power '+Math.round(powPct)+'%' : '';
+  document.getElementById('s-bar-oth').style.width = Math.max(0,othPct).toFixed(1) + '%';
+  document.getElementById('s-leg-eng').textContent  = 'Engaged (' + fmt(d.engaged) + ')';
+  document.getElementById('s-leg-st').textContent   = 'Single-Touch (' + fmt(d.singleTouch) + ')';
+  document.getElementById('s-leg-pow').textContent  = 'Power Participants (' + fmt(d.powerPax) + ')';
+  document.getElementById('s-eng-note').innerHTML =
+    `<strong>${fmt(d.powerPax)} Power Participants</strong> (3+ courses) are your prime volunteer and teacher pipeline. That\'s ${powRate}% of participants delivering outsized community impact.`;
+
+  /* Chapter 4: Progression */
+  document.getElementById('s-progressed').textContent = fmt(d.progressed);
+  const progRate = d.uniquePax ? (d.progressed/d.uniquePax*100).toFixed(1) : 0;
+  document.getElementById('s-prog-rate').textContent = progRate + '%';
+  document.getElementById('s-ttp-days').textContent  = d.ttpDays ? d.ttpDays : '—';
+  const progGrowth = (pd.progressed && d.progressed) ? ((d.progressed-pd.progressed)/pd.progressed*100).toFixed(1) : null;
+  if (progGrowth) { document.getElementById('s-prog-badge').textContent = (parseFloat(progGrowth)>=0?'▲':'▼')+' '+Math.abs(progGrowth)+'% YoY'; }
+  const prevTTP = pFY ? (pd.ttpDays || null) : null;
+  document.getElementById('s-ttp-badge').textContent = prevTTP ? (d.ttpDays < prevTTP ? '▼ from '+prevTTP+' days' : '▲ from '+prevTTP+' days') : 'first year';
+  renderStoryCohortChart();
+
+  /* Chapter 5: Institutions */
+  document.getElementById('s-total-mous').textContent = fmt(di.totalMOUs);
+  document.getElementById('s-active-mous').textContent = fmt(di.activeMOUs);
+  document.getElementById('s-zero-mous').textContent   = fmt(di.zeroCourseM);
+  document.getElementById('s-mou-lag').textContent     = di.mouLag ? di.mouLag : '—';
+  const pdi = pFY ? getD(pFY, 'institutional') : {};
+  const mouGrowth = (pdi.totalMOUs && di.totalMOUs) ? ((di.totalMOUs-pdi.totalMOUs)/pdi.totalMOUs*100).toFixed(1) : null;
+  if (mouGrowth) { document.getElementById('s-mou-badge').textContent = '▲ '+mouGrowth+'% YoY'; }
+  const aMouGrowth = (pdi.activeMOUs && di.activeMOUs) ? ((di.activeMOUs-pdi.activeMOUs)/pdi.activeMOUs*100).toFixed(1) : null;
+  if (aMouGrowth) { document.getElementById('s-active-mou-badge').textContent = '▲ '+aMouGrowth+'% YoY'; }
+  const lagBadge = document.getElementById('s-lag-badge');
+  if (pdi.mouLag && di.mouLag) { lagBadge.textContent = (di.mouLag < pdi.mouLag ? '▼ from '+pdi.mouLag+' days' : '▲ from '+pdi.mouLag+' days'); }
+  const depthPct = di.avgDepthScore ? (di.avgDepthScore/4*100).toFixed(0) : 0;
+  document.getElementById('s-depth-fill').style.width = depthPct + '%';
+  document.getElementById('s-depth-fill').textContent = di.avgDepthScore ? di.avgDepthScore : '';
+  document.getElementById('s-depth-title').textContent = 'Average Behavioral Depth Score — ' + (di.avgDepthScore||'—') + ' out of 4';
+  const depthGrowth = (pdi.avgDepthScore && di.avgDepthScore) ? ((di.avgDepthScore-pdi.avgDepthScore)/pdi.avgDepthScore*100).toFixed(1) : null;
+  document.getElementById('s-depth-note').textContent = depthGrowth
+    ? `Score improved from ${pdi.avgDepthScore}/4 last year — a gain of ${depthGrowth}%. Target: reach 3.0/4 by FY 2025-26.`
+    : `Current behavioral depth score: ${di.avgDepthScore || '—'}/4. Target: reach 3.0/4.`;
+  document.getElementById('s-zero-alert-text').textContent =
+    (di.zeroCourseM || '—') + ' institutions have signed MOUs but run zero courses.';
+
+  /* Chapter 6: Pipeline */
+  document.getElementById('s-ttp').textContent   = tp.ttpGrads;
+  document.getElementById('s-vtp').textContent   = tp.vtpGrads;
+  document.getElementById('s-pax-conv').textContent  = tp.paxToTeacher + '%';
+  document.getElementById('s-vtp-ttp').textContent   = tp.vtpToTtp + '%';
+  document.getElementById('s-lapsed').textContent    = th.lapsed;
+  document.getElementById('s-reactivated').textContent = th.reactivated;
+
+  const ttpGrowth = (ptp.ttpGrads && tp.ttpGrads) ? ((tp.ttpGrads-ptp.ttpGrads)/ptp.ttpGrads*100).toFixed(1) : null;
+  const vtpGrowth = (ptp.vtpGrads && tp.vtpGrads) ? ((tp.vtpGrads-ptp.vtpGrads)/ptp.vtpGrads*100).toFixed(1) : null;
+  if (ttpGrowth) { document.getElementById('s-ttp-yoy').textContent = '▲ '+ttpGrowth+'% YoY'; }
+  if (vtpGrowth) { document.getElementById('s-vtp-yoy').textContent = '▲ '+vtpGrowth+'% YoY'; }
+
+  const prevPC  = ptp.paxToTeacher;
+  const prevVT  = ptp.vtpToTtp;
+  const prevLap = pth.lapsed;
+  const prevRea = pth.reactivated;
+  document.getElementById('s-pax-conv-badge').textContent = prevPC ? '▲ from '+prevPC+'%' : 'first year';
+  document.getElementById('s-vtp-ttp-badge').textContent  = prevVT ? '▲ from '+prevVT+'%' : 'first year';
+  document.getElementById('s-lapsed-badge').textContent   = prevLap ? (th.lapsed < prevLap ? '▼ from '+prevLap : '▲ from '+prevLap) : 'first year';
+  document.getElementById('s-react-badge').textContent    = prevRea ? '▲ '+((th.reactivated-prevRea)/prevRea*100).toFixed(1)+'% YoY' : 'first year';
+
+  document.getElementById('s-pipeline-note').innerHTML =
+    `Pax-to-Teacher conversion has improved to <strong>${tp.paxToTeacher}%</strong> — working toward a medium-term target of 4–5%. VTP→TTP pipeline at ${tp.vtpToTtp}% shows growing commitment. Lapsed teacher count${prevLap && th.lapsed < prevLap ? ' dropped from '+prevLap+' to '+th.lapsed+' — a positive sign,' : ''} reinforced by ${th.reactivated} successful reactivations.`;
+
+  const nextFY = fy === 'fy2223' ? 'FY 2023-24' : (fy === 'fy2324' ? 'FY 2024-25' : 'FY 2025-26');
+  document.getElementById('s-pipeline-callout').innerHTML =
+    `<strong>Key focus area for ${nextFY}:</strong> Close the hyper-concentration gap by activating 40+ additional consistent teachers from the VTP graduate pool and converting at least 25% of newly trained TTPs within their first year.`;
+}
+
+function renderStoryTeacherChart(th) {
+  destroyChart('storyTeacher');
+  const ctx = document.getElementById('teacherHealthStory');
+  charts['storyTeacher'] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Active & Consistent','Active Inconsistent','Newly Activated','Lapsed','Reactivated'],
+      datasets:[{
+        data:[th.consistent, th.inconsistent, th.newlyActivated, th.lapsed, th.reactivated],
+        backgroundColor:[C.green, C.blue1, C.blue2, C.red, C.amber],
+        borderRadius:5, borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>' '+c.parsed.x+' teachers' } } },
+      scales:{ x:{ grid:{color:'#e8ecf4'} }, y:{ grid:{display:false} } }
+    }
+  });
+}
+
+function renderStoryCohortChart() {
+  destroyChart('storyCohort');
+  const fy  = currentFY;
+  const cr  = DATA[fy].cohortRetention['all'];
+  const labels = ['FY+0','FY+1','FY+2'];
+  const fyIdx  = FY_ORDER.indexOf(fy);
+
+  const mkDs = (key, label, color, dash) => ({
+    label, data: cr[key],
+    borderColor: color,
+    backgroundColor: dash ? 'transparent' : color+'14',
+    borderWidth: 2.5,
+    borderDash: dash || [],
+    pointRadius: 5,
+    pointBackgroundColor: color,
+    tension: 0.3,
+    fill: !dash,
+    spanGaps: false
+  });
+
+  const allDs = [
+    mkDs('fy2223', FY_LABELS.fy2223, C.navy, null),
+    mkDs('fy2324', FY_LABELS.fy2324, C.blue1, [5,4]),
+    mkDs('fy2425', FY_LABELS.fy2425, C.green, [8,4])
+  ];
+  const datasets = allDs.slice(0, fyIdx+1);
+
+  const ctx = document.getElementById('retentionChartStory');
+  charts['storyCohort'] = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:12, padding:10 } },
+        tooltip:{ mode:'index', intersect:false }
+      },
+      scales:{
+        y:{ min:0, max:110, ticks:{ callback:v=>v+'%', stepSize:20 }, grid:{color:'#e8ecf4'} },
+        x:{ grid:{display:false} }
+      }
+    }
+  });
+
+  // Update callout text based on oldest visible cohort
+  const oldestCohortData = DATA.fy2425.cohortRetention.all.fy2223;
+  const yr2Val = oldestCohortData[2];
+  const calloutEl = document.getElementById('s-cohort-callout-text');
+  if (yr2Val !== null && yr2Val !== undefined && fy !== 'fy2223') {
+    calloutEl.innerHTML = `<strong>FY22-23 cohort: ${yr2Val}% still active after 2 years.</strong> Nearly half of participants from two years ago continue engaging — a strong signal of long-term stickiness, well above industry norms for wellness programs.`;
+  } else {
+    calloutEl.innerHTML = `<strong>Cohort retention tracking active.</strong> Year-over-year retention data will populate as cohorts mature. FY 2022-23 cohort data is your earliest completed cohort.`;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  update();
+});
+</script>
+</body>
+</html>
