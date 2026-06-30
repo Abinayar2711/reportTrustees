@@ -904,114 +904,128 @@ body {
   .topnav-title span { display: none; }
 }
 
-/* ── INTRO OVERLAY ── */
+/* ── ANIMATED TOUR ── */
 #intro-overlay {
   position: fixed; inset: 0;
-  background: rgba(10,20,50,0.72);
+  background: rgba(10,20,50,0.82);
   z-index: 2000;
-  display: flex; align-items: center; justify-content: center;
-  backdrop-filter: blur(4px);
-  animation: introFadeIn 0.4s ease;
+  display: none;
+  animation: introFadeIn 0.35s ease;
 }
-#intro-modal {
-  background: #fff; border-radius: 18px;
-  width: 500px; max-width: 93vw;
-  padding: 36px 36px 26px;
-  box-shadow: 0 28px 80px rgba(0,0,0,0.28);
+/* spotlight ring around the active nav button */
+#tour-spotlight {
+  position: fixed;
+  border: 2.5px solid rgba(255,255,255,0.95);
+  border-radius: 10px;
+  box-shadow: 0 0 22px rgba(255,255,255,0.30), 0 0 60px rgba(255,255,255,0.10);
+  pointer-events: none;
+  z-index: 2003;
+  opacity: 0;
+  transition: left .55s cubic-bezier(.4,0,.2,1),
+              top .55s cubic-bezier(.4,0,.2,1),
+              width .5s cubic-bezier(.4,0,.2,1),
+              height .5s cubic-bezier(.4,0,.2,1),
+              opacity .3s ease;
 }
-.intro-slide { display: none; }
-.intro-slide.active { display: block; animation: introSlideIn 0.3s ease; }
-.intro-view-pill {
+/* simulated cursor */
+#tour-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2004;
+  opacity: 0;
+  transition: left .52s cubic-bezier(.4,0,.2,1),
+              top .52s cubic-bezier(.4,0,.2,1),
+              opacity .25s ease;
+}
+/* tooltip card */
+#tour-tooltip {
+  position: fixed;
+  width: 310px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  box-shadow: 0 14px 55px rgba(0,0,0,0.32);
+  z-index: 2004;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .28s ease, transform .28s ease;
+  transform: translateY(6px);
+}
+#tour-tooltip.visible { opacity: 1; transform: translateY(0); }
+#tour-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: var(--arrow-left, 26px);
+  border: 8px solid transparent;
+  border-bottom-color: #fff;
+  border-top: 0;
+}
+.tour-view-pill {
   display: inline-block;
-  font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; padding: 4px 13px;
-  border-radius: 20px; margin-bottom: 18px;
+  font-size: 10px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 11px;
+  border-radius: 20px; margin-bottom: 9px;
 }
-.intro-view-icon { font-size: 40px; margin-bottom: 12px; line-height: 1; }
-.intro-slide-title { font-size: 21px; font-weight: 700; color: #1a2744; margin-bottom: 10px; line-height: 1.25; }
-.intro-slide-desc { font-size: 13.5px; color: #5a6a8a; line-height: 1.65; margin-bottom: 14px; }
-.intro-bullets { list-style: none; padding: 0; margin: 0 0 4px; }
-.intro-bullets li { font-size: 12.5px; color: #5a6a8a; padding: 4px 0 4px 20px; position: relative; }
-.intro-bullets li::before { content: '→'; position: absolute; left: 0; color: #3b82f6; font-weight: 700; }
-#intro-dots { display: flex; justify-content: center; gap: 8px; margin: 22px 0 18px; }
+#tour-tt-title { font-size: 16px; font-weight: 700; color: #1a2744; margin-bottom: 7px; line-height: 1.3; }
+#tour-tt-desc  { font-size: 12.5px; color: #5a6a8a; line-height: 1.6; }
+/* footer: dots + buttons */
+#tour-footer {
+  position: fixed;
+  bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 22px;
+  z-index: 2004;
+}
+#intro-dots { display: flex; gap: 8px; }
 .intro-dot {
   height: 8px; width: 8px; border-radius: 50%;
-  background: #dde2ef; cursor: pointer;
-  transition: width 0.25s ease, background 0.25s ease;
+  background: rgba(255,255,255,0.35); cursor: pointer;
+  transition: width .25s ease, background .25s ease;
 }
-.intro-dot.active { width: 26px; border-radius: 4px; background: #1a2744; }
-#intro-nav { display: flex; justify-content: space-between; align-items: center; }
-#intro-skip { background: none; border: none; font-size: 12.5px; color: #9aa8c4; cursor: pointer; padding: 8px 2px; }
-#intro-skip:hover { color: #5a6a8a; }
-.intro-btn-group { display: flex; gap: 8px; }
-.intro-btn { border: none; border-radius: 8px; padding: 10px 22px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
-.intro-btn:hover { opacity: 0.88; }
-.intro-btn-back { background: #f0f2f7; color: #1a2744; }
-.intro-btn-next { background: #1a2744; color: #fff; }
+.intro-dot.active { width: 26px; border-radius: 4px; background: #fff; }
+.intro-btn { border: none; border-radius: 8px; padding: 9px 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.intro-btn-skip { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }
+.intro-btn-next  { background: #fff; color: #1a2744; }
 .intro-btn-start { background: #2ecc71; color: #fff; }
-.btn-tour { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 7px; font-size: 12px; font-weight: 600; padding: 5px 11px; cursor: pointer; transition: background 0.15s; }
+.btn-tour { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 7px; font-size: 12px; font-weight: 600; padding: 5px 11px; cursor: pointer; transition: background .15s; }
 .btn-tour:hover { background: rgba(255,255,255,0.22); }
 @keyframes introFadeIn { from { opacity:0; } to { opacity:1; } }
-@keyframes introSlideIn { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:translateX(0); } }
+@keyframes tourClick { from { transform:scale(.4); opacity:.9; } to { transform:scale(3); opacity:0; } }
 </style>
 </head>
 <body>
 
-<!-- INTRO OVERLAY -->
+<!-- ANIMATED TOUR OVERLAY -->
 <div id="intro-overlay">
-  <div id="intro-modal">
 
-    <div class="intro-slide active">
-      <div class="intro-view-pill" style="background:#e8edf8; color:#1a2744;">Executive View</div>
-      <div class="intro-view-icon">📊</div>
-      <div class="intro-slide-title">The FY-level strategic picture</div>
-      <div class="intro-slide-desc">See the full year at a glance — total registrations, trackable participants, new enrollments, courses taken and teachers delivering. Switch between FYs and segments with one click.</div>
-      <ul class="intro-bullets">
-        <li>5 headline KPIs with YoY change and plain-English descriptions</li>
-        <li>Retention curve · Teacher health · Program mix charts</li>
-        <li>Detailed scorecards per segment — Overall, Adult, Children, Institutional</li>
-      </ul>
-    </div>
+  <!-- spotlight ring — positioned over the active nav button -->
+  <div id="tour-spotlight"></div>
 
-    <div class="intro-slide">
-      <div class="intro-view-pill" style="background:#e8f5e9; color:#276033;">Manager View</div>
-      <div class="intro-view-icon">⚙️</div>
-      <div class="intro-slide-title">Slice by any period you need</div>
-      <div class="intro-slide-desc">MTD, QTD, Q1, Q2, Q3, Q4, H1, H2, or Full FY. The operational view for day-to-day program management — what happened this period, who delivered it, and where the pipeline stands.</div>
-      <ul class="intro-bullets">
-        <li>Period filter chips · Segment filter (Adult / Children / Institutional)</li>
-        <li>New Enrollments · Returning Participants · Teachers Delivering</li>
-        <li>Program Health — cumulative all-time funnel since FY 2022-23</li>
-      </ul>
-    </div>
+  <!-- simulated cursor SVG -->
+  <div id="tour-cursor">
+    <svg width="22" height="26" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 2 L2 21 L7 16.5 L10 24 L13.5 22.5 L10.5 15 L17 15 Z"
+            fill="white" stroke="#1a2744" stroke-width="1.6" stroke-linejoin="round"/>
+    </svg>
+  </div>
 
-    <div class="intro-slide">
-      <div class="intro-view-pill" style="background:#fff8e7; color:#7a4f00;">Story View</div>
-      <div class="intro-view-icon">📖</div>
-      <div class="intro-slide-title">The annual narrative for owners &amp; trustees</div>
-      <div class="intro-slide-desc">A chapter-by-chapter walkthrough of the full year — designed to be read, not just scanned. Alerts, callouts and recommendations are generated automatically from the live data.</div>
-      <ul class="intro-bullets">
-        <li>Chapter 1: Reach · Chapter 2: Teachers · Chapter 3: Engagement</li>
-        <li>Chapter 4: Progression · Chapter 5: Institutions · Chapter 6: Pipeline</li>
-        <li>Switch FY at the top and the entire narrative updates instantly</li>
-      </ul>
-    </div>
+  <!-- tooltip card with upward arrow -->
+  <div id="tour-tooltip">
+    <div id="tour-pill" class="tour-view-pill"></div>
+    <div id="tour-tt-title"></div>
+    <div id="tour-tt-desc"></div>
+  </div>
 
+  <!-- bottom footer: dots + buttons -->
+  <div id="tour-footer">
+    <button class="intro-btn intro-btn-skip" onclick="closeIntro()">Skip</button>
     <div id="intro-dots">
       <div class="intro-dot active" onclick="introGoTo(0)"></div>
       <div class="intro-dot" onclick="introGoTo(1)"></div>
       <div class="intro-dot" onclick="introGoTo(2)"></div>
     </div>
-
-    <div id="intro-nav">
-      <button id="intro-skip" onclick="closeIntro()">Skip intro</button>
-      <div class="intro-btn-group">
-        <button class="intro-btn intro-btn-back" id="intro-prev" onclick="introNav(-1)" style="display:none;">← Back</button>
-        <button class="intro-btn intro-btn-next" id="intro-next" onclick="introNav(1)">Next →</button>
-      </div>
-    </div>
-
+    <button class="intro-btn intro-btn-next" id="intro-next" onclick="introNav(1)">Next →</button>
   </div>
+
 </div>
 
 <div id="loading-bar"></div>
@@ -1029,9 +1043,9 @@ body {
     <option value="fy2223">FY 2022-23</option>
   </select>
   <div class="view-toggle">
-    <button class="active" onclick="switchView('exec',this)">Executive View</button>
-    <button onclick="switchView('manager',this)">Manager View</button>
-    <button onclick="switchView('story',this)">Story View</button>
+    <button id="vbtn-exec"    class="active" onclick="switchView('exec',this)">Executive View</button>
+    <button id="vbtn-manager"            onclick="switchView('manager',this)">Manager View</button>
+    <button id="vbtn-story"              onclick="switchView('story',this)">Story View</button>
   </div>
   <button class="btn-tour" onclick="openIntro()" title="View walkthrough">? Tour</button>
 </nav>
@@ -2886,51 +2900,157 @@ function renderStoryCohortChart() {
 document.addEventListener('DOMContentLoaded', () => {
   update();
   if (!localStorage.getItem('aol-intro-seen')) {
-    document.getElementById('intro-overlay').style.display = 'flex';
-  } else {
-    document.getElementById('intro-overlay').style.display = 'none';
+    openIntro();
   }
 });
 
-/* ── INTRO TOUR ── */
-let _introSlide = 0;
-const _INTRO_TOTAL = 3;
+/* ── ANIMATED TOUR ── */
+const TOUR_STEPS = [
+  {
+    btnId: 'vbtn-exec',
+    pill:  { bg: '#e8edf8', color: '#1a2744', label: 'Executive View' },
+    title: 'The FY-level strategic picture',
+    desc:  'KPIs, YoY scorecards, cohort retention curves and teacher health — the full year on one screen. Switch FY or segment with one click.'
+  },
+  {
+    btnId: 'vbtn-manager',
+    pill:  { bg: '#e8f5e9', color: '#276033', label: 'Manager View' },
+    title: 'Slice by any period you need',
+    desc:  'MTD, QTD, Q1–Q4, H1/H2 or Full FY. New enrollments, returning participants and teachers delivering — filtered to exactly the window you care about.'
+  },
+  {
+    btnId: 'vbtn-story',
+    pill:  { bg: '#fff8e7', color: '#7a4f00', label: 'Story View' },
+    title: 'The annual narrative for owners & trustees',
+    desc:  'Six chapters — Reach, Teachers, Engagement, Progression, Institutions, Pipeline. Alerts and callouts auto-generate from live data.'
+  }
+];
+
+let _tourStep  = 0;
+let _tourTimer = null;
 
 function openIntro() {
-  _introSlide = 0;
-  _renderIntro();
-  document.getElementById('intro-overlay').style.display = 'flex';
+  _tourStep = 0;
+  const ov = document.getElementById('intro-overlay');
+  ov.style.display = 'block';
+  /* raise nav above overlay so real buttons show through */
+  const nav = document.querySelector('.topnav');
+  nav.style.setProperty('z-index', '2002', 'important');
+  nav.style.pointerEvents = 'none';
+  /* reset spotlight off-screen before first step */
+  const sp = document.getElementById('tour-spotlight');
+  sp.style.transition = 'none';
+  sp.style.opacity = '0';
+  sp.style.left = '-200px'; sp.style.top = '0px'; sp.style.width = '120px'; sp.style.height = '36px';
+  /* reset cursor */
+  const cur = document.getElementById('tour-cursor');
+  cur.style.transition = 'none';
+  cur.style.left = '50%'; cur.style.top = '-60px'; cur.style.opacity = '0';
+  /* hide tooltip */
+  document.getElementById('tour-tooltip').classList.remove('visible');
+  setTimeout(_tourAnimate, 50);
 }
 
 function closeIntro() {
+  if (_tourTimer) { clearTimeout(_tourTimer); _tourTimer = null; }
   document.getElementById('intro-overlay').style.display = 'none';
+  document.getElementById('tour-tooltip').classList.remove('visible');
+  document.getElementById('tour-spotlight').style.opacity = '0';
+  document.getElementById('tour-cursor').style.opacity = '0';
+  /* restore nav */
+  const nav = document.querySelector('.topnav');
+  nav.style.removeProperty('z-index');
+  nav.style.pointerEvents = '';
+  /* restore button opacity */
+  document.querySelectorAll('.view-toggle button').forEach(b => b.style.opacity = '');
   localStorage.setItem('aol-intro-seen', '1');
 }
 
 function introNav(dir) {
-  _introSlide = Math.max(0, Math.min(_INTRO_TOTAL - 1, _introSlide + dir));
-  _renderIntro();
+  if (_tourTimer) { clearTimeout(_tourTimer); _tourTimer = null; }
+  _tourStep = Math.max(0, Math.min(TOUR_STEPS.length - 1, _tourStep + dir));
+  _tourAnimate();
 }
 
 function introGoTo(idx) {
-  _introSlide = idx;
-  _renderIntro();
+  if (_tourTimer) { clearTimeout(_tourTimer); _tourTimer = null; }
+  _tourStep = idx;
+  _tourAnimate();
 }
 
-function _renderIntro() {
-  document.querySelectorAll('.intro-slide').forEach((s, i) =>
-    s.classList.toggle('active', i === _introSlide));
-  document.querySelectorAll('.intro-dot').forEach((d, i) =>
-    d.classList.toggle('active', i === _introSlide));
-  document.getElementById('intro-prev').style.display = _introSlide > 0 ? '' : 'none';
-  const nextBtn = document.getElementById('intro-next');
-  const isLast  = _introSlide === _INTRO_TOTAL - 1;
-  nextBtn.textContent  = isLast ? 'Get Started →' : 'Next →';
-  nextBtn.className    = 'intro-btn ' + (isLast ? 'intro-btn-start' : 'intro-btn-next');
-  nextBtn.onclick      = isLast ? closeIntro : () => introNav(1);
+function _tourAnimate() {
+  const step = TOUR_STEPS[_tourStep];
+  const btn  = document.getElementById(step.btnId);
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+
+  /* update dots */
+  document.querySelectorAll('.intro-dot').forEach((d,i) => d.classList.toggle('active', i === _tourStep));
+
+  /* dim inactive view-toggle buttons so spotlight pops */
+  document.querySelectorAll('.view-toggle button').forEach((b,i) => {
+    b.style.opacity = (i === _tourStep) ? '1' : '0.25';
+  });
+
+  /* move spotlight */
+  const sp = document.getElementById('tour-spotlight');
+  sp.style.transition = 'left .55s cubic-bezier(.4,0,.2,1), top .55s cubic-bezier(.4,0,.2,1), width .5s cubic-bezier(.4,0,.2,1), height .5s cubic-bezier(.4,0,.2,1), opacity .3s ease';
+  sp.style.left   = (rect.left - 9) + 'px';
+  sp.style.top    = (rect.top  - 9) + 'px';
+  sp.style.width  = (rect.width  + 18) + 'px';
+  sp.style.height = (rect.height + 18) + 'px';
+  sp.style.opacity = '1';
+
+  /* move cursor — arrives slightly before button center */
+  const cur = document.getElementById('tour-cursor');
+  cur.style.transition = 'left .52s cubic-bezier(.4,0,.2,1), top .52s cubic-bezier(.4,0,.2,1), opacity .25s ease';
+  cur.style.left    = (rect.left + rect.width * 0.28) + 'px';
+  cur.style.top     = (rect.top  + rect.height * 0.1) + 'px';
+  cur.style.opacity = '1';
+
+  /* hide tooltip while moving */
+  document.getElementById('tour-tooltip').classList.remove('visible');
+
+  /* after cursor arrives: click ripple + show tooltip */
+  _tourTimer = setTimeout(() => {
+    _tourClickRipple(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+    /* populate tooltip */
+    const pill = document.getElementById('tour-pill');
+    pill.textContent       = step.pill.label;
+    pill.style.background  = step.pill.bg;
+    pill.style.color       = step.pill.color;
+    document.getElementById('tour-tt-title').textContent = step.title;
+    document.getElementById('tour-tt-desc').textContent  = step.desc;
+
+    /* position tooltip below spotlight, horizontally centred on button */
+    const tt     = document.getElementById('tour-tooltip');
+    const ttLeft = Math.max(10, Math.min(window.innerWidth - 330, rect.left + rect.width / 2 - 155));
+    tt.style.top  = (rect.bottom + 14) + 'px';
+    tt.style.left = ttLeft + 'px';
+    tt.classList.add('visible');
+
+    /* reposition arrow so it points up at the button */
+    const arrowLeft = Math.max(14, Math.min(280, rect.left + rect.width / 2 - ttLeft - 8));
+    tt.style.setProperty('--arrow-left', arrowLeft + 'px');
+
+    /* update next button */
+    const isLast  = _tourStep === TOUR_STEPS.length - 1;
+    const nextBtn = document.getElementById('intro-next');
+    nextBtn.textContent = isLast ? 'Get Started →' : 'Next →';
+    nextBtn.className   = 'intro-btn ' + (isLast ? 'intro-btn-start' : 'intro-btn-next');
+    nextBtn.onclick     = isLast ? closeIntro : () => introNav(1);
+  }, 580);
 }
 
-/* click outside modal to dismiss */
+function _tourClickRipple(x, y) {
+  const ring = document.createElement('div');
+  ring.style.cssText = `position:fixed;left:${x-15}px;top:${y-15}px;width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,0.9);pointer-events:none;z-index:2005;animation:tourClick .55s ease-out forwards;`;
+  document.body.appendChild(ring);
+  setTimeout(() => ring.remove(), 650);
+}
+
+/* click backdrop to dismiss */
 document.getElementById('intro-overlay').addEventListener('click', function(e) {
   if (e.target === this) closeIntro();
 });
