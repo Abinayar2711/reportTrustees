@@ -1020,6 +1020,18 @@ body {
       </div>
     </div>
 
+    <!-- Cumulative Program Health -->
+    <div class="section-header" style="margin-top:28px;">
+      Program Health — All-Time
+      <span style="font-size:11px; font-weight:600; background:#e8f5e9; color:#276033; padding:3px 9px; border-radius:5px; margin-left:8px; letter-spacing:0.01em;">Since FY 2022-23 · Cumulative · Not FY-filtered</span>
+    </div>
+    <div class="scorecard-card" id="exec-cumulative-card" style="max-width:620px;">
+      <table class="sc-table">
+        <thead><tr><th>Metric</th><th>Count</th><th>% of Base</th></tr></thead>
+        <tbody id="exec-cumulative-body"></tbody>
+      </table>
+    </div>
+
     <!-- ROW 3: Scorecard Tables -->
     <div class="section-header" style="margin-top:28px;">Detailed Scorecards</div>
     <div class="scorecard-grid-4">
@@ -1462,7 +1474,7 @@ body {
 const DATA = {
   fy2223: {
     all: {
-      totalRegistrations: 14280,
+      totalRegistrations: 14280, newEnrollments: 6630,
       uniquePax: 10200, engaged: 3800, progressed: 1300, singleTouch: 4500,
       powerPax: 620, activeTeachers: 353, activeMOUs: 78, zeroCourseM: 22,
       totalMOUs: 78, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1472,21 +1484,21 @@ const DATA = {
       hyperConc: true, pptAll: 28, ttpDays: 230
     },
     adult: {
-      totalRegistrations: 9520,
+      totalRegistrations: 9520, newEnrollments: 4420,
       uniquePax: 6800, engaged: 2400, progressed: 820, singleTouch: 3200,
       powerPax: 480, activeTeachers: 190, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: 230,
       l1Pax: 5500, l2Pax: 1100, l3Pax: 200, advancedProgressed: 80
     },
     children: {
-      totalRegistrations: 2760,
+      totalRegistrations: 2760, newEnrollments: 1495,
       uniquePax: 2300, engaged: 720, progressed: 290, singleTouch: 1400,
       powerPax: 82, activeTeachers: 88, activeMOUs: null, zeroCourseM: null,
       pptAll: 24, ttpDays: null,
       l1Pax: 1900, l2Pax: 380
     },
     institutional: {
-      totalRegistrations: 1290,
+      totalRegistrations: 1290, newEnrollments: 715,
       uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
       activeTeachers: 120, activeMOUs: 63, zeroCourseM: 22, totalMOUs: 78,
       schools: 48, colleges: 30, mouLag: 52, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1508,7 +1520,7 @@ const DATA = {
   },
   fy2324: {
     all: {
-      totalRegistrations: 18160,
+      totalRegistrations: 18160, newEnrollments: 5842,
       uniquePax: 12700, engaged: 5010, progressed: 1630, singleTouch: 5000,
       powerPax: 770, activeTeachers: 352, activeMOUs: 96, zeroCourseM: 25,
       totalMOUs: 96, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
@@ -1518,21 +1530,21 @@ const DATA = {
       hyperConc: true, pptAll: 32, ttpDays: 210
     },
     adult: {
-      totalRegistrations: 11500,
+      totalRegistrations: 11500, newEnrollments: 3726,
       uniquePax: 8100, engaged: 2800, progressed: 980, singleTouch: 4300,
       powerPax: 620, activeTeachers: 198, activeMOUs: null, zeroCourseM: null,
       pptAll: 35, ttpDays: 210,
       l1Pax: 6500, l2Pax: 1600, l3Pax: 330, advancedProgressed: 120
     },
     children: {
-      totalRegistrations: 3510,
+      totalRegistrations: 3510, newEnrollments: 1334,
       uniquePax: 2900, engaged: 860, progressed: 370, singleTouch: 1740,
       powerPax: 98, activeTeachers: 92, activeMOUs: null, zeroCourseM: null,
       pptAll: 28, ttpDays: null,
       l1Pax: 2400, l2Pax: 470
     },
     institutional: {
-      totalRegistrations: 2010,
+      totalRegistrations: 2010, newEnrollments: 782,
       uniquePax: 1700, engaged: 1350, progressed: 280, singleTouch: null,
       activeTeachers: 130, activeMOUs: 71, zeroCourseM: 25, totalMOUs: 96,
       schools: 61, colleges: 35, mouLag: 41, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
@@ -1554,7 +1566,7 @@ const DATA = {
   },
   fy2425: {
     all: {
-      totalRegistrations: 20900,
+      totalRegistrations: 20900, newEnrollments: 6545,
       uniquePax: 14230, engaged: 5410, progressed: 1870, singleTouch: 5420,
       powerPax: 890, activeTeachers: 342, activeMOUs: 118, zeroCourseM: 29,
       totalMOUs: 118, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
@@ -1564,21 +1576,21 @@ const DATA = {
       hyperConc: true, pptAll: 35, ttpDays: 187
     },
     adult: {
-      totalRegistrations: 14260,
+      totalRegistrations: 14260, newEnrollments: 4232,
       uniquePax: 9200, engaged: 3100, progressed: 1200, singleTouch: 4800,
       powerPax: 890, activeTeachers: 210, activeMOUs: null, zeroCourseM: null,
       pptAll: 40, ttpDays: 187,
       l1Pax: 7200, l2Pax: 2100, l3Pax: 480, advancedProgressed: 180
     },
     children: {
-      totalRegistrations: 3970,
+      totalRegistrations: 3970, newEnrollments: 1426,
       uniquePax: 3100, engaged: 980, progressed: 420, singleTouch: 1820,
       powerPax: 116, activeTeachers: 95, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: null,
       l1Pax: 2600, l2Pax: 560
     },
     institutional: {
-      totalRegistrations: 3340,
+      totalRegistrations: 3340, newEnrollments: 1348,
       uniquePax: 2930, engaged: 1330, progressed: 250, singleTouch: null,
       activeTeachers: 145, activeMOUs: 89, zeroCourseM: 29, totalMOUs: 118,
       schools: 74, colleges: 44, mouLag: 34, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
@@ -1951,19 +1963,19 @@ function updateKPIs() {
     ' Key Performance Indicators — ' + fyLabel;
 
   if (seg === 'institutional') {
-    // Institutional KPIs: Unique Pax, Active MOUs, Zero-Course MOUs, Avg Depth Score, Avg Courses/Inst
-    setKPI(0, 'Unique Pax (via Institutions)', d.uniquePax, pFY ? pd.uniquePax : null, false);
-    setKPI(1, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false);
-    setKPI(2, 'Zero-Course MOUs', d.zeroCourseM, pFY ? pd.zeroCourseM : null, true, true);
-    setKPI(3, 'Avg Behavioral Depth Score', d.avgDepthScore ? d.avgDepthScore+'/4' : '—', null, false, false, true);
+    // Institutional KPIs: Total Registrations · Unique Pax · Active MOUs · Zero-Course · Avg Depth
+    setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false);
+    setKPI(1, 'Unique Pax (via Institutions)', d.uniquePax, pFY ? pd.uniquePax : null, false);
+    setKPI(2, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false);
+    setKPI(3, 'Zero-Course MOUs', d.zeroCourseM, pFY ? pd.zeroCourseM : null, true, true);
     setKPI(4, 'Avg Courses / Institution', d.avgCoursesPerInst, pFY ? pd.avgCoursesPerInst : null, false);
   } else {
-    // All / Adult / Children KPIs
-    setKPI(0, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false);
-    setKPI(1, 'Engaged Participants', d.engaged, pFY ? pd.engaged : null, false);
-    setKPI(2, 'Progressed Participants', d.progressed, pFY ? pd.progressed : null, false);
-    setKPI(3, 'Active Teachers', d.activeTeachers, pFY ? pd.activeTeachers : null, false);
-    setKPI(4, 'Single-Touch Pax', d.singleTouch, pFY ? pd.singleTouch : null, true);
+    // All / Adult / Children KPIs: Total Registrations · Unique Participants · New Enrollments · Engaged · Active Teachers
+    setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false);
+    setKPI(1, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false);
+    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false);
+    setKPI(3, 'Engaged Participants', d.engaged, pFY ? pd.engaged : null, false);
+    setKPI(4, 'Active Teachers', d.activeTeachers, pFY ? pd.activeTeachers : null, false);
   }
 }
 
@@ -2232,6 +2244,20 @@ function updateTables() {
   if (showChildren)      updateChildrenTable();
   if (showInstitutional) updateInstitutionalTable();
   updateRightTable();
+  updateExecCumulativeHealth();
+}
+
+function updateExecCumulativeHealth() {
+  const seg = currentSegment;
+  const cd  = CUMULATIVE_DATA[seg] || CUMULATIVE_DATA.all;
+  const base = cd.totalRegistered;
+  let rows = '';
+  rows += cumRow('Total Registered (ever)',         base,           null, 'All distinct individuals (unique by mobile) since FY 2022-23');
+  rows += cumRow('↳ Engaged (>1 course)',           cd.engaged,     base, 'Returned for at least one more course — across any time period');
+  rows += cumRow('  ↳ Progressed (entry→higher)',   cd.progressed,  base, 'Moved from entry to a higher-level course within 2 FYs of first enrollment');
+  rows += cumRow('  ↳ Power Participants (3+)',     cd.powerPax,    base, '3 or more courses ever — prime candidates for volunteering or teacher training');
+  rows += cumRow('↳ Single-Touch (never returned)', cd.singleTouch, base, 'Attended exactly once and never came back — the activation opportunity pool');
+  document.getElementById('exec-cumulative-body').innerHTML = rows;
 }
 
 function sectionRow(label) {
@@ -2262,6 +2288,8 @@ function updateOverallTable() {
     'Total course registrations by registration ID — counts the same person multiple times if they attended multiple courses. Reflects total activity volume.');
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct individuals by mobile number — one person regardless of how many courses they attended this FY');
+  rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
+    'Individuals whose mobile appears for the first time this FY — net new people reached');
   rows += row('Engaged Participants', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed Participants', d.progressed, pd.progressed, false, '', '',
@@ -2290,6 +2318,8 @@ function updateAdultTable() {
     'Total course registrations by registration ID — seat-count, not headcount');
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct adult individuals (18+) by mobile number');
+  rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
+    'First-time mobile number this FY — net new adult individuals reached');
   rows += row('Engaged (>1 course)', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed', d.progressed, pd.progressed, false, '', '',
@@ -2323,6 +2353,8 @@ function updateChildrenTable() {
     'Total course registrations by registration ID — seat-count, not headcount');
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct children participants (under 18) — deduplicated by mobile (typically parent\'s mobile for young children)');
+  rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
+    'First-time mobile this FY — net new children reached');
   rows += row('IP Program Participants', d.uniquePax ? Math.round(d.uniquePax*0.59) : null,
               pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null, false, '', '',
     'Participants in the IP program specifically — max revenue');
@@ -2352,6 +2384,8 @@ function updateInstitutionalTable() {
     'Total course registrations by registration ID — seat-count, not headcount');
   rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct individuals enrolled through institutions — deduplicated by mobile where available');
+  rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
+    'First-time mobile this FY through institutional channels — net new individuals reached via institutions');
   rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs, false, '', '',
     'Cumulative Memoranda of Understanding signed with schools and colleges — includes all historical MOUs');
   rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs, false, '', '',
