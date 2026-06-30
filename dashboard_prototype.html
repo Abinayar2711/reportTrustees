@@ -271,6 +271,7 @@ body {
 .kpi-change.down { color: #a01c1c; background: #fde8e8; }
 .kpi-change.neu  { color: #7a4f00; background: #fff0c8; }
 .kpi-change.none { color: var(--text-muted); background: #f0f2f7; }
+.kpi-sub { display: block; font-size: 11px; color: var(--text-muted); margin-top: 5px; line-height: 1.3; }
 
 /* CHART LAYOUTS */
 .chart-row-2 {
@@ -958,29 +959,34 @@ body {
     <!-- KPI STRIP -->
     <div class="kpi-strip" id="kpi-strip">
       <div class="kpi-card" id="kpi0">
-        <div class="kpi-name" id="kpi0-name">Unique Participants</div>
-        <div class="kpi-number" id="kpi0-num">14,230</div>
-        <span class="kpi-change up" id="kpi0-chg"><span>▲</span> 12.1% YoY</span>
+        <div class="kpi-name" id="kpi0-name">Total Registrations</div>
+        <div class="kpi-number" id="kpi0-num">—</div>
+        <span class="kpi-change none" id="kpi0-chg">—</span>
+        <span class="kpi-sub" id="kpi0-sub"></span>
       </div>
       <div class="kpi-card" id="kpi1">
-        <div class="kpi-name" id="kpi1-name">Engaged Participants</div>
-        <div class="kpi-number" id="kpi1-num">5,410</div>
-        <span class="kpi-change up" id="kpi1-chg"><span>▲</span> 8.0% YoY</span>
+        <div class="kpi-name" id="kpi1-name">Unique Participants</div>
+        <div class="kpi-number" id="kpi1-num">—</div>
+        <span class="kpi-change none" id="kpi1-chg">—</span>
+        <span class="kpi-sub" id="kpi1-sub"></span>
       </div>
       <div class="kpi-card" id="kpi2">
-        <div class="kpi-name" id="kpi2-name">Progressed Participants</div>
-        <div class="kpi-number" id="kpi2-num">1,870</div>
-        <span class="kpi-change up" id="kpi2-chg"><span>▲</span> 14.7% YoY</span>
+        <div class="kpi-name" id="kpi2-name">New Enrollments</div>
+        <div class="kpi-number" id="kpi2-num">—</div>
+        <span class="kpi-change none" id="kpi2-chg">—</span>
+        <span class="kpi-sub" id="kpi2-sub"></span>
       </div>
       <div class="kpi-card" id="kpi3">
-        <div class="kpi-name" id="kpi3-name">Active Teachers</div>
-        <div class="kpi-number" id="kpi3-num">342</div>
-        <span class="kpi-change down" id="kpi3-chg"><span>▼</span> 2.8% YoY</span>
+        <div class="kpi-name" id="kpi3-name">Courses Run</div>
+        <div class="kpi-number" id="kpi3-num">—</div>
+        <span class="kpi-change none" id="kpi3-chg">—</span>
+        <span class="kpi-sub" id="kpi3-sub"></span>
       </div>
       <div class="kpi-card" id="kpi4">
-        <div class="kpi-name" id="kpi4-name">Single-Touch Pax</div>
-        <div class="kpi-number" id="kpi4-num">5,420</div>
-        <span class="kpi-change up" id="kpi4-chg"><span>▲</span> 8.4% YoY</span>
+        <div class="kpi-name" id="kpi4-name">Active Teachers</div>
+        <div class="kpi-number" id="kpi4-num">—</div>
+        <span class="kpi-change none" id="kpi4-chg">—</span>
+        <span class="kpi-sub" id="kpi4-sub"></span>
       </div>
     </div>
 
@@ -1474,7 +1480,7 @@ body {
 const DATA = {
   fy2223: {
     all: {
-      totalRegistrations: 14280, newEnrollments: 6630,
+      totalRegistrations: 14280, newEnrollments: 6630, coursesRun: 320,
       uniquePax: 10200, engaged: 3800, progressed: 1300, singleTouch: 4500,
       powerPax: 620, activeTeachers: 353, activeMOUs: 78, zeroCourseM: 22,
       totalMOUs: 78, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1484,21 +1490,21 @@ const DATA = {
       hyperConc: true, pptAll: 28, ttpDays: 230
     },
     adult: {
-      totalRegistrations: 9520, newEnrollments: 4420,
+      totalRegistrations: 9520, newEnrollments: 4420, coursesRun: 218,
       uniquePax: 6800, engaged: 2400, progressed: 820, singleTouch: 3200,
       powerPax: 480, activeTeachers: 190, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: 230,
       l1Pax: 5500, l2Pax: 1100, l3Pax: 200, advancedProgressed: 80
     },
     children: {
-      totalRegistrations: 2760, newEnrollments: 1495,
+      totalRegistrations: 2760, newEnrollments: 1495, coursesRun: 70,
       uniquePax: 2300, engaged: 720, progressed: 290, singleTouch: 1400,
       powerPax: 82, activeTeachers: 88, activeMOUs: null, zeroCourseM: null,
       pptAll: 24, ttpDays: null,
       l1Pax: 1900, l2Pax: 380
     },
     institutional: {
-      totalRegistrations: 1290, newEnrollments: 715,
+      totalRegistrations: 1290, newEnrollments: 715, coursesRun: 32,
       uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
       activeTeachers: 120, activeMOUs: 63, zeroCourseM: 22, totalMOUs: 78,
       schools: 48, colleges: 30, mouLag: 52, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1520,7 +1526,7 @@ const DATA = {
   },
   fy2324: {
     all: {
-      totalRegistrations: 18160, newEnrollments: 5842,
+      totalRegistrations: 18160, newEnrollments: 5842, coursesRun: 398,
       uniquePax: 12700, engaged: 5010, progressed: 1630, singleTouch: 5000,
       powerPax: 770, activeTeachers: 352, activeMOUs: 96, zeroCourseM: 25,
       totalMOUs: 96, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
@@ -1530,21 +1536,21 @@ const DATA = {
       hyperConc: true, pptAll: 32, ttpDays: 210
     },
     adult: {
-      totalRegistrations: 11500, newEnrollments: 3726,
+      totalRegistrations: 11500, newEnrollments: 3726, coursesRun: 270,
       uniquePax: 8100, engaged: 2800, progressed: 980, singleTouch: 4300,
       powerPax: 620, activeTeachers: 198, activeMOUs: null, zeroCourseM: null,
       pptAll: 35, ttpDays: 210,
       l1Pax: 6500, l2Pax: 1600, l3Pax: 330, advancedProgressed: 120
     },
     children: {
-      totalRegistrations: 3510, newEnrollments: 1334,
+      totalRegistrations: 3510, newEnrollments: 1334, coursesRun: 88,
       uniquePax: 2900, engaged: 860, progressed: 370, singleTouch: 1740,
       powerPax: 98, activeTeachers: 92, activeMOUs: null, zeroCourseM: null,
       pptAll: 28, ttpDays: null,
       l1Pax: 2400, l2Pax: 470
     },
     institutional: {
-      totalRegistrations: 2010, newEnrollments: 782,
+      totalRegistrations: 2010, newEnrollments: 782, coursesRun: 40,
       uniquePax: 1700, engaged: 1350, progressed: 280, singleTouch: null,
       activeTeachers: 130, activeMOUs: 71, zeroCourseM: 25, totalMOUs: 96,
       schools: 61, colleges: 35, mouLag: 41, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
@@ -1566,7 +1572,7 @@ const DATA = {
   },
   fy2425: {
     all: {
-      totalRegistrations: 20900, newEnrollments: 6545,
+      totalRegistrations: 20900, newEnrollments: 6545, coursesRun: 480,
       uniquePax: 14230, engaged: 5410, progressed: 1870, singleTouch: 5420,
       powerPax: 890, activeTeachers: 342, activeMOUs: 118, zeroCourseM: 29,
       totalMOUs: 118, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
@@ -1576,21 +1582,21 @@ const DATA = {
       hyperConc: true, pptAll: 35, ttpDays: 187
     },
     adult: {
-      totalRegistrations: 14260, newEnrollments: 4232,
+      totalRegistrations: 14260, newEnrollments: 4232, coursesRun: 323,
       uniquePax: 9200, engaged: 3100, progressed: 1200, singleTouch: 4800,
       powerPax: 890, activeTeachers: 210, activeMOUs: null, zeroCourseM: null,
       pptAll: 40, ttpDays: 187,
       l1Pax: 7200, l2Pax: 2100, l3Pax: 480, advancedProgressed: 180
     },
     children: {
-      totalRegistrations: 3970, newEnrollments: 1426,
+      totalRegistrations: 3970, newEnrollments: 1426, coursesRun: 106,
       uniquePax: 3100, engaged: 980, progressed: 420, singleTouch: 1820,
       powerPax: 116, activeTeachers: 95, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: null,
       l1Pax: 2600, l2Pax: 560
     },
     institutional: {
-      totalRegistrations: 3340, newEnrollments: 1348,
+      totalRegistrations: 3340, newEnrollments: 1348, coursesRun: 51,
       uniquePax: 2930, engaged: 1330, progressed: 250, singleTouch: null,
       activeTeachers: 145, activeMOUs: 89, zeroCourseM: 29, totalMOUs: 118,
       schools: 74, colleges: 44, mouLag: 34, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
@@ -1963,23 +1969,23 @@ function updateKPIs() {
     ' Key Performance Indicators — ' + fyLabel;
 
   if (seg === 'institutional') {
-    // Institutional KPIs: Total Registrations · Unique Pax · Active MOUs · Zero-Course · Avg Depth
-    setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false);
-    setKPI(1, 'Unique Pax (via Institutions)', d.uniquePax, pFY ? pd.uniquePax : null, false);
-    setKPI(2, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false);
-    setKPI(3, 'Zero-Course MOUs', d.zeroCourseM, pFY ? pd.zeroCourseM : null, true, true);
-    setKPI(4, 'Avg Courses / Institution', d.avgCoursesPerInst, pFY ? pd.avgCoursesPerInst : null, false);
+    // Institutional: Total Registrations · Unique Pax · New Enrollments · Courses Run · Active MOUs
+    setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false, false, false, 'Course seat-count at institutions this FY');
+    setKPI(1, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false, false, false, 'Distinct individuals via institutions (by mobile)');
+    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'First-time mobile through institutions this FY');
+    setKPI(3, 'Courses Run', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions delivered at schools & colleges');
+    setKPI(4, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false, false, false, 'Institutions with ≥1 course this FY');
   } else {
-    // All / Adult / Children KPIs: Total Registrations · Unique Participants · New Enrollments · Engaged · Active Teachers
-    setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false);
-    setKPI(1, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false);
-    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false);
-    setKPI(3, 'Engaged Participants', d.engaged, pFY ? pd.engaged : null, false);
-    setKPI(4, 'Active Teachers', d.activeTeachers, pFY ? pd.activeTeachers : null, false);
+    // All / Adult / Children: Total Registrations · Unique Participants · New Enrollments · Courses Run · Active Teachers
+    setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false, false, false, 'Course seat-count by registration ID');
+    setKPI(1, 'Unique Participants', d.uniquePax, pFY ? pd.uniquePax : null, false, false, false, 'Distinct individuals by mobile — actual people');
+    setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'First-time mobile this FY — net new people reached');
+    setKPI(3, 'Courses Run', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions delivered across all teachers this FY');
+    setKPI(4, 'Active Teachers', d.activeTeachers, pFY ? pd.activeTeachers : null, false, false, false, 'Ran ≥1 course in the last 3 FYs');
   }
 }
 
-function setKPI(idx, name, curr, prev, lowerIsBetter=false, redAccent=false, rawDisplay=false) {
+function setKPI(idx, name, curr, prev, lowerIsBetter=false, redAccent=false, rawDisplay=false, sub='') {
   const card = document.getElementById('kpi'+idx);
   card.className = 'kpi-card' + (redAccent ? ' accent-red' : '');
   document.getElementById('kpi'+idx+'-name').textContent = name;
@@ -1998,6 +2004,8 @@ function setKPI(idx, name, curr, prev, lowerIsBetter=false, redAccent=false, raw
     chgEl.className = 'kpi-change none';
     chgEl.innerHTML = '—';
   }
+  const subEl = document.getElementById('kpi'+idx+'-sub');
+  if (subEl) subEl.textContent = sub;
 }
 
 /* ═══════════════════════════════════════════════
@@ -2290,6 +2298,10 @@ function updateOverallTable() {
     'Distinct individuals by mobile number — one person regardless of how many courses they attended this FY');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
     'Individuals whose mobile appears for the first time this FY — net new people reached');
+  rows += row('Courses Run', d.coursesRun, pd.coursesRun, false, '', '',
+    'Total course sessions delivered by all teachers this FY');
+  rows += row('Active Teachers', d.activeTeachers, pd.activeTeachers, false, '', '',
+    'Ran ≥1 course in the last 3 FYs — the contributing teacher base');
   rows += row('Engaged Participants', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed Participants', d.progressed, pd.progressed, false, '', '',
