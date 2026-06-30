@@ -1386,7 +1386,7 @@ body {
       <div class="kpi-card kpi-card-sm">
         <div class="kpi-name">New Enrollments</div>
         <div class="kpi-number" id="mkpi-new-num">—</div>
-        <span class="kpi-change none">Mobile not seen in any prior FY since 2022-23</span>
+        <span class="kpi-change none">Mobile never seen before this period — across all FYs since 2022-23</span>
       </div>
       <div class="kpi-card kpi-card-sm">
         <div class="kpi-name">Returning Participants</div>
@@ -2297,7 +2297,7 @@ function updateOverallTable() {
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct individuals by mobile number — one person regardless of how many courses they attended this FY');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'Mobile number not seen in any prior FY since 2022-23 — truly first-time individual in the program');
+    'Mobile never seen before this FY — not in any prior FY since 2022-23. A person who lapsed and returned is Returning, not New.');
   rows += row('Courses Run', d.coursesRun, pd.coursesRun, false, '', '',
     'Total course sessions delivered this FY');
   rows += row('Teachers Delivering', d.teachersDelivering, pd.teachersDelivering, false, '', '',
@@ -2333,7 +2333,7 @@ function updateAdultTable() {
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct adult individuals (18+) by mobile number');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'Mobile not seen in any prior FY since 2022-23 — first-time adult in the program');
+    'Mobile never seen in any prior FY since 2022-23 — a genuinely new adult individual, not someone returning after a gap');
   rows += row('Engaged (>1 course)', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed', d.progressed, pd.progressed, false, '', '',
@@ -2368,7 +2368,7 @@ function updateChildrenTable() {
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct children participants (under 18) — deduplicated by mobile (typically parent\'s mobile for young children)');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'Mobile not seen in any prior FY since 2022-23 — first-time child participant in the program');
+    'Mobile never seen in any prior FY since 2022-23 — genuinely new child, not a returning participant from an earlier year');
   rows += row('IP Program Participants', d.uniquePax ? Math.round(d.uniquePax*0.59) : null,
               pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null, false, '', '',
     'Participants in the IP program specifically — max revenue');
@@ -2399,7 +2399,7 @@ function updateInstitutionalTable() {
   rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax, false, '', '',
     'Distinct individuals enrolled through institutions — deduplicated by mobile where available');
   rows += row('New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
-    'Mobile not seen in any prior FY since 2022-23 — first-time individual enrolled through an institution');
+    'Mobile never seen in any prior FY since 2022-23 — genuinely new individual through institutional channel, not a returning student');
   rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs, false, '', '',
     'Cumulative Memoranda of Understanding signed with schools and colleges — includes all historical MOUs');
   rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs, false, '', '',
