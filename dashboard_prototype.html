@@ -875,6 +875,13 @@ body {
           <tbody id="sc-children-body"></tbody>
         </table>
       </div>
+      <div class="scorecard-card" id="sc-card-institutional">
+        <div class="scorecard-title">Institutional Health</div>
+        <table class="sc-table">
+          <thead><tr><th>Metric</th><th>This FY</th><th>Last FY</th><th>Change</th></tr></thead>
+          <tbody id="sc-institutional-body"></tbody>
+        </table>
+      </div>
     </div>
 
     <div style="height:32px;"></div>
@@ -1685,15 +1692,18 @@ function renderParetoChart() {
 ═══════════════════════════════════════════════ */
 function updateTables() {
   const seg = currentSegment;
-  const showOverall  = seg === 'all' || seg === 'institutional';
-  const showAdult    = seg === 'all' || seg === 'adult';
-  const showChildren = seg === 'all' || seg === 'children';
-  document.getElementById('sc-card-overall').style.display  = showOverall  ? '' : 'none';
-  document.getElementById('sc-card-adult').style.display    = showAdult    ? '' : 'none';
-  document.getElementById('sc-card-children').style.display = showChildren ? '' : 'none';
-  if (showOverall)  updateOverallTable();
-  if (showAdult)    updateAdultTable();
-  if (showChildren) updateChildrenTable();
+  const showOverall       = seg === 'all';
+  const showAdult         = seg === 'all' || seg === 'adult';
+  const showChildren      = seg === 'all' || seg === 'children';
+  const showInstitutional = seg === 'institutional';
+  document.getElementById('sc-card-overall').style.display       = showOverall       ? '' : 'none';
+  document.getElementById('sc-card-adult').style.display         = showAdult         ? '' : 'none';
+  document.getElementById('sc-card-children').style.display      = showChildren      ? '' : 'none';
+  document.getElementById('sc-card-institutional').style.display = showInstitutional ? '' : 'none';
+  if (showOverall)       updateOverallTable();
+  if (showAdult)         updateAdultTable();
+  if (showChildren)      updateChildrenTable();
+  if (showInstitutional) updateInstitutionalTable();
   updateRightTable();
 }
 
@@ -1754,6 +1764,26 @@ function updateChildrenTable() {
   rows += row('Single-Touch', d.singleTouch, pd.singleTouch, true);
   rows += row('Power Participants (3+)', d.powerPax, pd.powerPax);
   document.getElementById('sc-children-body').innerHTML = rows;
+}
+
+function updateInstitutionalTable() {
+  const fy  = currentFY;
+  const pFY = getPrevFY();
+  const d   = getD(fy, 'institutional');
+  const pd  = pFY ? getD(pFY, 'institutional') : {};
+  let rows = '';
+  rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax);
+  rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs);
+  rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs);
+  rows += row('Schools', d.schools, pd.schools);
+  rows += row('Colleges', d.colleges, pd.colleges);
+  rows += row('Zero-Course MOUs', d.zeroCourseM, pd.zeroCourseM, true);
+  rows += row('MOU → First Course Lag (days)', d.mouLag, pd.mouLag, true,
+              d.mouLag ? d.mouLag+'d' : '—', pd.mouLag ? pd.mouLag+'d' : '—');
+  rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst);
+  rows += row('Avg Behavioral Depth Score', d.avgDepthScore, pd.avgDepthScore,
+              false, d.avgDepthScore ? d.avgDepthScore+'/4' : '—', pd.avgDepthScore ? pd.avgDepthScore+'/4' : '—');
+  document.getElementById('sc-institutional-body').innerHTML = rows;
 }
 
 function updateRightTable() {
