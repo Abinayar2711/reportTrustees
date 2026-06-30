@@ -1188,7 +1188,7 @@ const DATA = {
       uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
       activeTeachers: 120, activeMOUs: 63, zeroCourseM: 22, totalMOUs: 78,
       schools: 48, colleges: 30, mouLag: 52, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
-      pptAll: 8
+      studentPenetrationRate: 8, pptAll: 8
     },
     teacherHealth: { consistent: 185, inconsistent: 95, newlyActivated: 48, lapsed: 82, reactivated: 11 },
     programMix: {
@@ -1228,7 +1228,7 @@ const DATA = {
       uniquePax: 1700, engaged: 1350, progressed: 280, singleTouch: null,
       activeTeachers: 130, activeMOUs: 71, zeroCourseM: 25, totalMOUs: 96,
       schools: 61, colleges: 35, mouLag: 41, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
-      pptAll: 11
+      studentPenetrationRate: 11, pptAll: 11
     },
     teacherHealth: { consistent: 192, inconsistent: 92, newlyActivated: 51, lapsed: 76, reactivated: 17 },
     programMix: {
@@ -1268,7 +1268,7 @@ const DATA = {
       uniquePax: 2930, engaged: 1330, progressed: 250, singleTouch: null,
       activeTeachers: 145, activeMOUs: 89, zeroCourseM: 29, totalMOUs: 118,
       schools: 74, colleges: 44, mouLag: 34, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
-      pptAll: 18
+      studentPenetrationRate: 14, pptAll: 18
     },
     teacherHealth: { consistent: 198, inconsistent: 89, newlyActivated: 55, lapsed: 67, reactivated: 23 },
     programMix: {
@@ -1781,6 +1781,9 @@ function updateInstitutionalTable() {
   rows += row('MOU → First Course Lag (days)', d.mouLag, pd.mouLag, true,
               d.mouLag ? d.mouLag+'d' : '—', pd.mouLag ? pd.mouLag+'d' : '—');
   rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst);
+  rows += row('Student Penetration Rate', d.studentPenetrationRate, pd.studentPenetrationRate,
+              false, d.studentPenetrationRate ? d.studentPenetrationRate+'%' : '—',
+              pd.studentPenetrationRate ? pd.studentPenetrationRate+'%' : '—');
   rows += row('Avg Behavioral Depth Score', d.avgDepthScore, pd.avgDepthScore,
               false, d.avgDepthScore ? d.avgDepthScore+'/4' : '—', pd.avgDepthScore ? pd.avgDepthScore+'/4' : '—');
   document.getElementById('sc-institutional-body').innerHTML = rows;
@@ -1804,6 +1807,8 @@ function updateRightTable() {
   rows += row('Time-to-First-Course (avg days)', tp.timeToFirstCourse, ptp.timeToFirstCourse, true,
               tp.timeToFirstCourse ? tp.timeToFirstCourse+'d' : '—',
               ptp.timeToFirstCourse ? ptp.timeToFirstCourse+'d' : '—');
+  rows += row('Newly Activated Teachers', th.newlyActivated, pth.newlyActivated);
+  rows += row('Consistent Teachers', th.consistent, pth.consistent);
   rows += row('Pax-to-Teacher Conversion', tp.paxToTeacher, ptp.paxToTeacher,
               false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—');
   rows += row('VTP→TTP Conversion', tp.vtpToTtp, ptp.vtpToTtp,
