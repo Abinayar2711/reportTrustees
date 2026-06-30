@@ -903,9 +903,116 @@ body {
   .stat-cards-row { grid-template-columns: 1fr; }
   .topnav-title span { display: none; }
 }
+
+/* ── INTRO OVERLAY ── */
+#intro-overlay {
+  position: fixed; inset: 0;
+  background: rgba(10,20,50,0.72);
+  z-index: 2000;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+  animation: introFadeIn 0.4s ease;
+}
+#intro-modal {
+  background: #fff; border-radius: 18px;
+  width: 500px; max-width: 93vw;
+  padding: 36px 36px 26px;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.28);
+}
+.intro-slide { display: none; }
+.intro-slide.active { display: block; animation: introSlideIn 0.3s ease; }
+.intro-view-pill {
+  display: inline-block;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 4px 13px;
+  border-radius: 20px; margin-bottom: 18px;
+}
+.intro-view-icon { font-size: 40px; margin-bottom: 12px; line-height: 1; }
+.intro-slide-title { font-size: 21px; font-weight: 700; color: #1a2744; margin-bottom: 10px; line-height: 1.25; }
+.intro-slide-desc { font-size: 13.5px; color: #5a6a8a; line-height: 1.65; margin-bottom: 14px; }
+.intro-bullets { list-style: none; padding: 0; margin: 0 0 4px; }
+.intro-bullets li { font-size: 12.5px; color: #5a6a8a; padding: 4px 0 4px 20px; position: relative; }
+.intro-bullets li::before { content: '→'; position: absolute; left: 0; color: #3b82f6; font-weight: 700; }
+#intro-dots { display: flex; justify-content: center; gap: 8px; margin: 22px 0 18px; }
+.intro-dot {
+  height: 8px; width: 8px; border-radius: 50%;
+  background: #dde2ef; cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.intro-dot.active { width: 26px; border-radius: 4px; background: #1a2744; }
+#intro-nav { display: flex; justify-content: space-between; align-items: center; }
+#intro-skip { background: none; border: none; font-size: 12.5px; color: #9aa8c4; cursor: pointer; padding: 8px 2px; }
+#intro-skip:hover { color: #5a6a8a; }
+.intro-btn-group { display: flex; gap: 8px; }
+.intro-btn { border: none; border-radius: 8px; padding: 10px 22px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+.intro-btn:hover { opacity: 0.88; }
+.intro-btn-back { background: #f0f2f7; color: #1a2744; }
+.intro-btn-next { background: #1a2744; color: #fff; }
+.intro-btn-start { background: #2ecc71; color: #fff; }
+.btn-tour { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); border-radius: 7px; font-size: 12px; font-weight: 600; padding: 5px 11px; cursor: pointer; transition: background 0.15s; }
+.btn-tour:hover { background: rgba(255,255,255,0.22); }
+@keyframes introFadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes introSlideIn { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:translateX(0); } }
 </style>
 </head>
 <body>
+
+<!-- INTRO OVERLAY -->
+<div id="intro-overlay">
+  <div id="intro-modal">
+
+    <div class="intro-slide active">
+      <div class="intro-view-pill" style="background:#e8edf8; color:#1a2744;">Executive View</div>
+      <div class="intro-view-icon">📊</div>
+      <div class="intro-slide-title">The FY-level strategic picture</div>
+      <div class="intro-slide-desc">See the full year at a glance — total registrations, trackable participants, new enrollments, courses taken and teachers delivering. Switch between FYs and segments with one click.</div>
+      <ul class="intro-bullets">
+        <li>5 headline KPIs with YoY change and plain-English descriptions</li>
+        <li>Retention curve · Teacher health · Program mix charts</li>
+        <li>Detailed scorecards per segment — Overall, Adult, Children, Institutional</li>
+      </ul>
+    </div>
+
+    <div class="intro-slide">
+      <div class="intro-view-pill" style="background:#e8f5e9; color:#276033;">Manager View</div>
+      <div class="intro-view-icon">⚙️</div>
+      <div class="intro-slide-title">Slice by any period you need</div>
+      <div class="intro-slide-desc">MTD, QTD, Q1, Q2, Q3, Q4, H1, H2, or Full FY. The operational view for day-to-day program management — what happened this period, who delivered it, and where the pipeline stands.</div>
+      <ul class="intro-bullets">
+        <li>Period filter chips · Segment filter (Adult / Children / Institutional)</li>
+        <li>New Enrollments · Returning Participants · Teachers Delivering</li>
+        <li>Program Health — cumulative all-time funnel since FY 2022-23</li>
+      </ul>
+    </div>
+
+    <div class="intro-slide">
+      <div class="intro-view-pill" style="background:#fff8e7; color:#7a4f00;">Story View</div>
+      <div class="intro-view-icon">📖</div>
+      <div class="intro-slide-title">The annual narrative for owners &amp; trustees</div>
+      <div class="intro-slide-desc">A chapter-by-chapter walkthrough of the full year — designed to be read, not just scanned. Alerts, callouts and recommendations are generated automatically from the live data.</div>
+      <ul class="intro-bullets">
+        <li>Chapter 1: Reach · Chapter 2: Teachers · Chapter 3: Engagement</li>
+        <li>Chapter 4: Progression · Chapter 5: Institutions · Chapter 6: Pipeline</li>
+        <li>Switch FY at the top and the entire narrative updates instantly</li>
+      </ul>
+    </div>
+
+    <div id="intro-dots">
+      <div class="intro-dot active" onclick="introGoTo(0)"></div>
+      <div class="intro-dot" onclick="introGoTo(1)"></div>
+      <div class="intro-dot" onclick="introGoTo(2)"></div>
+    </div>
+
+    <div id="intro-nav">
+      <button id="intro-skip" onclick="closeIntro()">Skip intro</button>
+      <div class="intro-btn-group">
+        <button class="intro-btn intro-btn-back" id="intro-prev" onclick="introNav(-1)" style="display:none;">← Back</button>
+        <button class="intro-btn intro-btn-next" id="intro-next" onclick="introNav(1)">Next →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <div id="loading-bar"></div>
 
@@ -926,6 +1033,7 @@ body {
     <button onclick="switchView('manager',this)">Manager View</button>
     <button onclick="switchView('story',this)">Story View</button>
   </div>
+  <button class="btn-tour" onclick="openIntro()" title="View walkthrough">? Tour</button>
 </nav>
 
 <!-- FILTER BAR — Executive -->
@@ -2777,6 +2885,54 @@ function renderStoryCohortChart() {
 ═══════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   update();
+  if (!localStorage.getItem('aol-intro-seen')) {
+    document.getElementById('intro-overlay').style.display = 'flex';
+  } else {
+    document.getElementById('intro-overlay').style.display = 'none';
+  }
+});
+
+/* ── INTRO TOUR ── */
+let _introSlide = 0;
+const _INTRO_TOTAL = 3;
+
+function openIntro() {
+  _introSlide = 0;
+  _renderIntro();
+  document.getElementById('intro-overlay').style.display = 'flex';
+}
+
+function closeIntro() {
+  document.getElementById('intro-overlay').style.display = 'none';
+  localStorage.setItem('aol-intro-seen', '1');
+}
+
+function introNav(dir) {
+  _introSlide = Math.max(0, Math.min(_INTRO_TOTAL - 1, _introSlide + dir));
+  _renderIntro();
+}
+
+function introGoTo(idx) {
+  _introSlide = idx;
+  _renderIntro();
+}
+
+function _renderIntro() {
+  document.querySelectorAll('.intro-slide').forEach((s, i) =>
+    s.classList.toggle('active', i === _introSlide));
+  document.querySelectorAll('.intro-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === _introSlide));
+  document.getElementById('intro-prev').style.display = _introSlide > 0 ? '' : 'none';
+  const nextBtn = document.getElementById('intro-next');
+  const isLast  = _introSlide === _INTRO_TOTAL - 1;
+  nextBtn.textContent  = isLast ? 'Get Started →' : 'Next →';
+  nextBtn.className    = 'intro-btn ' + (isLast ? 'intro-btn-start' : 'intro-btn-next');
+  nextBtn.onclick      = isLast ? closeIntro : () => introNav(1);
+}
+
+/* click outside modal to dismiss */
+document.getElementById('intro-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeIntro();
 });
 </script>
 </body>
