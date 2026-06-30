@@ -1347,38 +1347,38 @@ body {
     <!-- Pulse Strip — what happened this period -->
     <div class="kpi-strip mgr-kpi-3" style="margin-top:12px;">
       <div class="kpi-card kpi-card-pulse">
-        <div class="kpi-name">Total Participants</div>
-        <div class="kpi-number" id="mkpi-total-num">—</div>
-        <span class="kpi-change none">Unique individuals in courses this period</span>
+        <div class="kpi-name">Total Registrations</div>
+        <div class="kpi-number" id="mkpi-regs-num">—</div>
+        <span class="kpi-change none">Course seat-count (reg IDs) this period</span>
+      </div>
+      <div class="kpi-card kpi-card-pulse">
+        <div class="kpi-name">Unique Participants</div>
+        <div class="kpi-number" id="mkpi-uniq-num">—</div>
+        <span class="kpi-change none">Distinct individuals by mobile</span>
       </div>
       <div class="kpi-card kpi-card-pulse">
         <div class="kpi-name">Courses Run</div>
         <div class="kpi-number" id="mkpi-courses-num">—</div>
-        <span class="kpi-change none">Course sessions delivered</span>
-      </div>
-      <div class="kpi-card kpi-card-pulse">
-        <div class="kpi-name">Teachers Delivering</div>
-        <div class="kpi-number" id="mkpi-deliver-num">—</div>
-        <span class="kpi-change none">Ran ≥1 course this period</span>
+        <span class="kpi-change none">Sessions delivered</span>
       </div>
     </div>
 
-    <!-- Secondary strip — context & health -->
+    <!-- Secondary strip — breakdown -->
     <div class="kpi-strip mgr-kpi-3" style="margin-top:10px;">
       <div class="kpi-card kpi-card-sm">
-        <div class="kpi-name">New Participants</div>
+        <div class="kpi-name">New Enrollments</div>
         <div class="kpi-number" id="mkpi-new-num">—</div>
-        <span class="kpi-change none">First time ever attending</span>
+        <span class="kpi-change none">First-time mobile this period</span>
       </div>
       <div class="kpi-card kpi-card-sm">
-        <div class="kpi-name">Active Teachers</div>
-        <div class="kpi-number" id="mkpi-active-num">—</div>
-        <span class="kpi-change none">Taught in last 3 FYs</span>
+        <div class="kpi-name">Returning Participants</div>
+        <div class="kpi-number" id="mkpi-ret-num">—</div>
+        <span class="kpi-change none">Known mobile, came back</span>
       </div>
-      <div class="kpi-card kpi-card-sm" id="mkpi-mou-card">
-        <div class="kpi-name">New MOUs Signed</div>
-        <div class="kpi-number" id="mkpi-mou-num">—</div>
-        <span class="kpi-change none" id="mkpi-mou-sub">Institutional segment</span>
+      <div class="kpi-card kpi-card-sm" id="mkpi-deliver-card">
+        <div class="kpi-name">Teachers Delivering</div>
+        <div class="kpi-number" id="mkpi-deliver-num">—</div>
+        <span class="kpi-change none">Ran ≥1 course this period</span>
       </div>
     </div>
 
@@ -1418,12 +1418,15 @@ body {
       </div>
     </div>
 
-    <!-- Participant Quality -->
-    <div id="mgr-pax-header" class="section-header" style="margin-top:28px;">Participant Quality</div>
-    <div id="mgr-pax-card" class="scorecard-card" style="max-width:560px;">
+    <!-- Program Health — Cumulative since FY 2022-23 -->
+    <div class="section-header" style="margin-top:28px;">
+      Program Health
+      <span style="font-size:11px; font-weight:600; background:#e8f5e9; color:#276033; padding:3px 9px; border-radius:5px; margin-left:8px; letter-spacing:0.01em;">Since FY 2022-23 · Cumulative · Not period-filtered</span>
+    </div>
+    <div class="scorecard-card" id="mgr-cumulative-card" style="max-width:620px;">
       <table class="sc-table">
-        <thead><tr><th>Metric</th><th>This Period</th><th>Full FY</th><th>% of FY</th></tr></thead>
-        <tbody id="mgr-pax-body"></tbody>
+        <thead><tr><th>Metric</th><th>Count</th><th>% of Base</th></tr></thead>
+        <tbody id="mgr-cumulative-body"></tbody>
       </table>
     </div>
 
@@ -1459,6 +1462,7 @@ body {
 const DATA = {
   fy2223: {
     all: {
+      totalRegistrations: 14280,
       uniquePax: 10200, engaged: 3800, progressed: 1300, singleTouch: 4500,
       powerPax: 620, activeTeachers: 353, activeMOUs: 78, zeroCourseM: 22,
       totalMOUs: 78, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1468,18 +1472,21 @@ const DATA = {
       hyperConc: true, pptAll: 28, ttpDays: 230
     },
     adult: {
+      totalRegistrations: 9520,
       uniquePax: 6800, engaged: 2400, progressed: 820, singleTouch: 3200,
       powerPax: 480, activeTeachers: 190, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: 230,
       l1Pax: 5500, l2Pax: 1100, l3Pax: 200, advancedProgressed: 80
     },
     children: {
+      totalRegistrations: 2760,
       uniquePax: 2300, engaged: 720, progressed: 290, singleTouch: 1400,
       powerPax: 82, activeTeachers: 88, activeMOUs: null, zeroCourseM: null,
       pptAll: 24, ttpDays: null,
       l1Pax: 1900, l2Pax: 380
     },
     institutional: {
+      totalRegistrations: 1290,
       uniquePax: 1100, engaged: 680, progressed: 190, singleTouch: null,
       activeTeachers: 120, activeMOUs: 63, zeroCourseM: 22, totalMOUs: 78,
       schools: 48, colleges: 30, mouLag: 52, avgDepthScore: 1.8, avgCoursesPerInst: 2.1,
@@ -1501,6 +1508,7 @@ const DATA = {
   },
   fy2324: {
     all: {
+      totalRegistrations: 18160,
       uniquePax: 12700, engaged: 5010, progressed: 1630, singleTouch: 5000,
       powerPax: 770, activeTeachers: 352, activeMOUs: 96, zeroCourseM: 25,
       totalMOUs: 96, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
@@ -1510,18 +1518,21 @@ const DATA = {
       hyperConc: true, pptAll: 32, ttpDays: 210
     },
     adult: {
+      totalRegistrations: 11500,
       uniquePax: 8100, engaged: 2800, progressed: 980, singleTouch: 4300,
       powerPax: 620, activeTeachers: 198, activeMOUs: null, zeroCourseM: null,
       pptAll: 35, ttpDays: 210,
       l1Pax: 6500, l2Pax: 1600, l3Pax: 330, advancedProgressed: 120
     },
     children: {
+      totalRegistrations: 3510,
       uniquePax: 2900, engaged: 860, progressed: 370, singleTouch: 1740,
       powerPax: 98, activeTeachers: 92, activeMOUs: null, zeroCourseM: null,
       pptAll: 28, ttpDays: null,
       l1Pax: 2400, l2Pax: 470
     },
     institutional: {
+      totalRegistrations: 2010,
       uniquePax: 1700, engaged: 1350, progressed: 280, singleTouch: null,
       activeTeachers: 130, activeMOUs: 71, zeroCourseM: 25, totalMOUs: 96,
       schools: 61, colleges: 35, mouLag: 41, avgDepthScore: 2.2, avgCoursesPerInst: 2.8,
@@ -1543,6 +1554,7 @@ const DATA = {
   },
   fy2425: {
     all: {
+      totalRegistrations: 20900,
       uniquePax: 14230, engaged: 5410, progressed: 1870, singleTouch: 5420,
       powerPax: 890, activeTeachers: 342, activeMOUs: 118, zeroCourseM: 29,
       totalMOUs: 118, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
@@ -1552,18 +1564,21 @@ const DATA = {
       hyperConc: true, pptAll: 35, ttpDays: 187
     },
     adult: {
+      totalRegistrations: 14260,
       uniquePax: 9200, engaged: 3100, progressed: 1200, singleTouch: 4800,
       powerPax: 890, activeTeachers: 210, activeMOUs: null, zeroCourseM: null,
       pptAll: 40, ttpDays: 187,
       l1Pax: 7200, l2Pax: 2100, l3Pax: 480, advancedProgressed: 180
     },
     children: {
+      totalRegistrations: 3970,
       uniquePax: 3100, engaged: 980, progressed: 420, singleTouch: 1820,
       powerPax: 116, activeTeachers: 95, activeMOUs: null, zeroCourseM: null,
       pptAll: 31, ttpDays: null,
       l1Pax: 2600, l2Pax: 560
     },
     institutional: {
+      totalRegistrations: 3340,
       uniquePax: 2930, engaged: 1330, progressed: 250, singleTouch: null,
       activeTeachers: 145, activeMOUs: 89, zeroCourseM: 29, totalMOUs: 118,
       schools: 74, colleges: 44, mouLag: 34, avgDepthScore: 2.6, avgCoursesPerInst: 3.2,
@@ -1599,6 +1614,14 @@ const TEACHER_PIPELINE = {
              paxToTeacher:2.4, vtpToTtp:18, lapsedTeachers:67, reactivated:23, hyperConc:true, paretoShare:74 }
 };
 
+/* Cumulative base — since FY 2022-23, not period-filtered */
+const CUMULATIVE_DATA = {
+  all:          { totalRegistered:25500, totalRegistrations:53340, engaged:11480, progressed:4200, singleTouch:14020, powerPax:2180 },
+  adult:        { totalRegistered:16500, totalRegistrations:35280, engaged:7200,  progressed:3000, singleTouch:9300,  powerPax:1680 },
+  children:     { totalRegistered:5800,  totalRegistrations:10240, engaged:2340,  progressed:1020, singleTouch:3460,  powerPax:290  },
+  institutional:{ totalRegistered:4200,  totalRegistrations:6640,  engaged:2300,  progressed:720,  singleTouch:null,  powerPax:null }
+};
+
 /* ═══════════════════════════════════════════════
    MANAGER DATA
 ═══════════════════════════════════════════════ */
@@ -1612,18 +1635,18 @@ const PERIOD_LABELS = {
 
 const MANAGER_DATA = {
   fy2425: {
-    mtd:  { all:{totalParticipants:1100,newPax:580, coursesRun:38, teachersDelivering:52, activeTeachers:65, newMOUs:2 }, adult:{totalParticipants:700, newPax:380, coursesRun:26,teachersDelivering:38,activeTeachers:52, newMOUs:null}, children:{totalParticipants:220, newPax:115,coursesRun:8, teachersDelivering:14,activeTeachers:20,newMOUs:null}, institutional:{totalParticipants:180, newPax:85, coursesRun:4, teachersDelivering:10,activeTeachers:18,newMOUs:2 } },
-    qtd:  { all:{totalParticipants:3600,newPax:1840,coursesRun:118,teachersDelivering:112,activeTeachers:138,newMOUs:5 }, adult:{totalParticipants:2300,newPax:1200,coursesRun:80, teachersDelivering:72, activeTeachers:110,newMOUs:null}, children:{totalParticipants:720, newPax:365,coursesRun:26,teachersDelivering:28, activeTeachers:45, newMOUs:null}, institutional:{totalParticipants:580, newPax:275,coursesRun:12,teachersDelivering:22, activeTeachers:55, newMOUs:5 } },
-    q1:   { all:{totalParticipants:4200,newPax:2310,coursesRun:145,teachersDelivering:158,activeTeachers:190,newMOUs:7 }, adult:{totalParticipants:2700,newPax:1485,coursesRun:98, teachersDelivering:102,activeTeachers:152,newMOUs:null}, children:{totalParticipants:870, newPax:479,coursesRun:32,teachersDelivering:34, activeTeachers:64, newMOUs:null}, institutional:{totalParticipants:630, newPax:346,coursesRun:15,teachersDelivering:27, activeTeachers:88, newMOUs:7 } },
-    q2:   { all:{totalParticipants:3600,newPax:2016,coursesRun:120,teachersDelivering:145,activeTeachers:168,newMOUs:5 }, adult:{totalParticipants:2300,newPax:1288,coursesRun:80, teachersDelivering:92, activeTeachers:135,newMOUs:null}, children:{totalParticipants:700, newPax:392,coursesRun:26,teachersDelivering:28, activeTeachers:52, newMOUs:null}, institutional:{totalParticipants:600, newPax:336,coursesRun:14,teachersDelivering:24, activeTeachers:78, newMOUs:5 } },
-    h1:   { all:{totalParticipants:7800,newPax:4212,coursesRun:265,teachersDelivering:195,activeTeachers:245,newMOUs:12}, adult:{totalParticipants:5000,newPax:2700,coursesRun:178,teachersDelivering:126,activeTeachers:195,newMOUs:null}, children:{totalParticipants:1570,newPax:848,coursesRun:58, teachersDelivering:50, activeTeachers:82, newMOUs:null}, institutional:{totalParticipants:1230,newPax:664,coursesRun:29, teachersDelivering:42, activeTeachers:112,newMOUs:12} },
-    q3:   { all:{totalParticipants:3500,newPax:1890,coursesRun:118,teachersDelivering:140,activeTeachers:185,newMOUs:6 }, adult:{totalParticipants:2280,newPax:1231,coursesRun:79, teachersDelivering:90, activeTeachers:148,newMOUs:null}, children:{totalParticipants:720, newPax:389,coursesRun:26,teachersDelivering:27, activeTeachers:60, newMOUs:null}, institutional:{totalParticipants:500, newPax:270,coursesRun:13,teachersDelivering:20, activeTeachers:82, newMOUs:6 } },
-    q4:   { all:{totalParticipants:2930,newPax:1612,coursesRun:97, teachersDelivering:128,activeTeachers:165,newMOUs:4 }, adult:{totalParticipants:1920,newPax:1056,coursesRun:66, teachersDelivering:82, activeTeachers:130,newMOUs:null}, children:{totalParticipants:590, newPax:325,coursesRun:22, teachersDelivering:22, activeTeachers:48, newMOUs:null}, institutional:{totalParticipants:420, newPax:231,coursesRun:9,  teachersDelivering:18, activeTeachers:72, newMOUs:4 } },
-    h2:   { all:{totalParticipants:6430,newPax:3472,coursesRun:215,teachersDelivering:175,activeTeachers:228,newMOUs:10}, adult:{totalParticipants:4200,newPax:2268,coursesRun:145,teachersDelivering:112,activeTeachers:182,newMOUs:null}, children:{totalParticipants:1310,newPax:708,coursesRun:48, teachersDelivering:42, activeTeachers:75, newMOUs:null}, institutional:{totalParticipants:920, newPax:497,coursesRun:22, teachersDelivering:36, activeTeachers:98, newMOUs:10} },
-    full: { all:{totalParticipants:14230,newPax:6545,coursesRun:480,teachersDelivering:280,activeTeachers:342,newMOUs:22}, adult:{totalParticipants:9200,newPax:4232,coursesRun:323,teachersDelivering:180,activeTeachers:210,newMOUs:null}, children:{totalParticipants:3100,newPax:1426,coursesRun:106,teachersDelivering:80, activeTeachers:95, newMOUs:null}, institutional:{totalParticipants:2930,newPax:1348,coursesRun:51, teachersDelivering:68, activeTeachers:145,newMOUs:22} }
+    mtd:  { all:{totalRegistrations:1342,uniqueParticipants:1100,newEnrollments:580, coursesRun:38, teachersDelivering:52, activeTeachers:65, newMOUs:2 }, adult:{totalRegistrations:868,uniqueParticipants:700, newEnrollments:380,coursesRun:26,teachersDelivering:38,activeTeachers:52, newMOUs:null}, children:{totalRegistrations:264,uniqueParticipants:220, newEnrollments:115,coursesRun:8, teachersDelivering:14,activeTeachers:20,newMOUs:null}, institutional:{totalRegistrations:210,uniqueParticipants:180, newEnrollments:85, coursesRun:4, teachersDelivering:10,activeTeachers:18,newMOUs:2 } },
+    qtd:  { all:{totalRegistrations:4680,uniqueParticipants:3600,newEnrollments:1840,coursesRun:118,teachersDelivering:112,activeTeachers:138,newMOUs:5 }, adult:{totalRegistrations:2990,uniqueParticipants:2300,newEnrollments:1200,coursesRun:80, teachersDelivering:72, activeTeachers:110,newMOUs:null}, children:{totalRegistrations:864,uniqueParticipants:720, newEnrollments:365,coursesRun:26,teachersDelivering:28, activeTeachers:45, newMOUs:null}, institutional:{totalRegistrations:670,uniqueParticipants:580, newEnrollments:275,coursesRun:12,teachersDelivering:22, activeTeachers:55, newMOUs:5 } },
+    q1:   { all:{totalRegistrations:5460,uniqueParticipants:4200,newEnrollments:2310,coursesRun:145,teachersDelivering:158,activeTeachers:190,newMOUs:7 }, adult:{totalRegistrations:3510,uniqueParticipants:2700,newEnrollments:1485,coursesRun:98, teachersDelivering:102,activeTeachers:152,newMOUs:null}, children:{totalRegistrations:1044,uniqueParticipants:870, newEnrollments:479,coursesRun:32,teachersDelivering:34, activeTeachers:64, newMOUs:null}, institutional:{totalRegistrations:726,uniqueParticipants:630, newEnrollments:346,coursesRun:15,teachersDelivering:27, activeTeachers:88, newMOUs:7 } },
+    q2:   { all:{totalRegistrations:4680,uniqueParticipants:3600,newEnrollments:2016,coursesRun:120,teachersDelivering:145,activeTeachers:168,newMOUs:5 }, adult:{totalRegistrations:2990,uniqueParticipants:2300,newEnrollments:1288,coursesRun:80, teachersDelivering:92, activeTeachers:135,newMOUs:null}, children:{totalRegistrations:840,uniqueParticipants:700, newEnrollments:392,coursesRun:26,teachersDelivering:28, activeTeachers:52, newMOUs:null}, institutional:{totalRegistrations:690,uniqueParticipants:600, newEnrollments:336,coursesRun:14,teachersDelivering:24, activeTeachers:78, newMOUs:5 } },
+    h1:   { all:{totalRegistrations:10530,uniqueParticipants:7800,newEnrollments:4212,coursesRun:265,teachersDelivering:195,activeTeachers:245,newMOUs:12}, adult:{totalRegistrations:6900,uniqueParticipants:5000,newEnrollments:2700,coursesRun:178,teachersDelivering:126,activeTeachers:195,newMOUs:null}, children:{totalRegistrations:1884,uniqueParticipants:1570,newEnrollments:848,coursesRun:58, teachersDelivering:50, activeTeachers:82, newMOUs:null}, institutional:{totalRegistrations:1414,uniqueParticipants:1230,newEnrollments:664,coursesRun:29, teachersDelivering:42, activeTeachers:112,newMOUs:12} },
+    q3:   { all:{totalRegistrations:4550,uniqueParticipants:3500,newEnrollments:1890,coursesRun:118,teachersDelivering:140,activeTeachers:185,newMOUs:6 }, adult:{totalRegistrations:2964,uniqueParticipants:2280,newEnrollments:1231,coursesRun:79, teachersDelivering:90, activeTeachers:148,newMOUs:null}, children:{totalRegistrations:864,uniqueParticipants:720, newEnrollments:389,coursesRun:26,teachersDelivering:27, activeTeachers:60, newMOUs:null}, institutional:{totalRegistrations:575,uniqueParticipants:500, newEnrollments:270,coursesRun:13,teachersDelivering:20, activeTeachers:82, newMOUs:6 } },
+    q4:   { all:{totalRegistrations:3809,uniqueParticipants:2930,newEnrollments:1612,coursesRun:97, teachersDelivering:128,activeTeachers:165,newMOUs:4 }, adult:{totalRegistrations:2496,uniqueParticipants:1920,newEnrollments:1056,coursesRun:66, teachersDelivering:82, activeTeachers:130,newMOUs:null}, children:{totalRegistrations:708,uniqueParticipants:590, newEnrollments:325,coursesRun:22, teachersDelivering:22, activeTeachers:48, newMOUs:null}, institutional:{totalRegistrations:483,uniqueParticipants:420, newEnrollments:231,coursesRun:9,  teachersDelivering:18, activeTeachers:72, newMOUs:4 } },
+    h2:   { all:{totalRegistrations:8745,uniqueParticipants:6430,newEnrollments:3472,coursesRun:215,teachersDelivering:175,activeTeachers:228,newMOUs:10}, adult:{totalRegistrations:5796,uniqueParticipants:4200,newEnrollments:2268,coursesRun:145,teachersDelivering:112,activeTeachers:182,newMOUs:null}, children:{totalRegistrations:1572,uniqueParticipants:1310,newEnrollments:708,coursesRun:48, teachersDelivering:42, activeTeachers:75, newMOUs:null}, institutional:{totalRegistrations:1058,uniqueParticipants:920, newEnrollments:497,coursesRun:22, teachersDelivering:36, activeTeachers:98, newMOUs:10} },
+    full: { all:{totalRegistrations:20900,uniqueParticipants:14230,newEnrollments:6545,coursesRun:480,teachersDelivering:280,activeTeachers:342,newMOUs:22}, adult:{totalRegistrations:14260,uniqueParticipants:9200,newEnrollments:4232,coursesRun:323,teachersDelivering:180,activeTeachers:210,newMOUs:null}, children:{totalRegistrations:3970,uniqueParticipants:3100,newEnrollments:1426,coursesRun:106,teachersDelivering:80, activeTeachers:95, newMOUs:null}, institutional:{totalRegistrations:3340,uniqueParticipants:2930,newEnrollments:1348,coursesRun:51, teachersDelivering:68, activeTeachers:145,newMOUs:22} }
   },
-  fy2324: { full: { all:{totalParticipants:12700,newPax:5842,coursesRun:398,teachersDelivering:265,activeTeachers:352,newMOUs:18}, adult:{totalParticipants:8100,newPax:3726,coursesRun:270,teachersDelivering:170,activeTeachers:198,newMOUs:null}, children:{totalParticipants:2900,newPax:1334,coursesRun:88,teachersDelivering:74,activeTeachers:92,newMOUs:null}, institutional:{totalParticipants:1700,newPax:782,coursesRun:40,teachersDelivering:58,activeTeachers:130,newMOUs:18} } },
-  fy2223: { full: { all:{totalParticipants:10200,newPax:4692,coursesRun:320,teachersDelivering:248,activeTeachers:353,newMOUs:14}, adult:{totalParticipants:6800,newPax:3128,coursesRun:218,teachersDelivering:158,activeTeachers:190,newMOUs:null}, children:{totalParticipants:2300,newPax:1058,coursesRun:70,teachersDelivering:62,activeTeachers:88,newMOUs:null}, institutional:{totalParticipants:1100,newPax:506,coursesRun:32,teachersDelivering:48,activeTeachers:120,newMOUs:14} } }
+  fy2324: { full: { all:{totalRegistrations:18160,uniqueParticipants:12700,newEnrollments:5842,coursesRun:398,teachersDelivering:265,activeTeachers:352,newMOUs:18}, adult:{totalRegistrations:11500,uniqueParticipants:8100,newEnrollments:3726,coursesRun:270,teachersDelivering:170,activeTeachers:198,newMOUs:null}, children:{totalRegistrations:3510,uniqueParticipants:2900,newEnrollments:1334,coursesRun:88,teachersDelivering:74,activeTeachers:92,newMOUs:null}, institutional:{totalRegistrations:2010,uniqueParticipants:1700,newEnrollments:782,coursesRun:40,teachersDelivering:58,activeTeachers:130,newMOUs:18} } },
+  fy2223: { full: { all:{totalRegistrations:14280,uniqueParticipants:10200,newEnrollments:4692,coursesRun:320,teachersDelivering:248,activeTeachers:353,newMOUs:14}, adult:{totalRegistrations:9520,uniqueParticipants:6800,newEnrollments:3128,coursesRun:218,teachersDelivering:158,activeTeachers:190,newMOUs:null}, children:{totalRegistrations:2760,uniqueParticipants:2300,newEnrollments:1058,coursesRun:70,teachersDelivering:62,activeTeachers:88,newMOUs:null}, institutional:{totalRegistrations:1290,uniqueParticipants:1100,newEnrollments:506,coursesRun:32,teachersDelivering:48,activeTeachers:120,newMOUs:14} } }
 };
 
 const LEVEL_DATA = {
@@ -1769,16 +1792,16 @@ function updateManagerView() {
     'Activity — ' + PERIOD_LABELS[currentPeriod] + ' · ' + FY_LABELS[fy];
 
   // Pulse KPIs
-  document.getElementById('mkpi-total-num').textContent   = fmt(md.totalParticipants) || '—';
-  document.getElementById('mkpi-courses-num').textContent = fmt(md.coursesRun)         || '—';
-  document.getElementById('mkpi-deliver-num').textContent = fmt(md.teachersDelivering) || '—';
+  document.getElementById('mkpi-regs-num').textContent  = fmt(md.totalRegistrations)  || '—';
+  document.getElementById('mkpi-uniq-num').textContent  = fmt(md.uniqueParticipants)  || '—';
+  document.getElementById('mkpi-courses-num').textContent = fmt(md.coursesRun)        || '—';
 
   // Secondary KPIs
-  document.getElementById('mkpi-new-num').textContent    = fmt(md.newPax)         || '—';
-  document.getElementById('mkpi-active-num').textContent = fmt(md.activeTeachers) || '—';
-  const showMOU = seg === 'all' || seg === 'institutional';
-  document.getElementById('mkpi-mou-card').style.display = showMOU ? '' : 'none';
-  if (showMOU) document.getElementById('mkpi-mou-num').textContent = fmt(md.newMOUs) || '—';
+  const returning = (md.uniqueParticipants != null && md.newEnrollments != null)
+    ? md.uniqueParticipants - md.newEnrollments : null;
+  document.getElementById('mkpi-new-num').textContent    = fmt(md.newEnrollments) || '—';
+  document.getElementById('mkpi-ret-num').textContent    = fmt(returning)         || '—';
+  document.getElementById('mkpi-deliver-num').textContent = fmt(md.teachersDelivering) || '—';
 
   // Level breakdown
   const levelSection = document.getElementById('mgr-level-section');
@@ -1821,24 +1844,16 @@ function updateManagerView() {
   document.getElementById('mtkpi2-num').textContent = fmt(td.ttpGrads)       || '—';
   document.getElementById('mtkpi3-num').textContent = fmt(td.vtpGrads)       || '—';
 
-  // Participant Quality (hidden for institutional — no single-touch / power pax data)
-  const paxHeader = document.getElementById('mgr-pax-header');
-  const paxCard   = document.getElementById('mgr-pax-card');
-  if (seg === 'institutional') {
-    paxHeader.style.display = 'none';
-    paxCard.style.display   = 'none';
-  } else {
-    paxHeader.style.display = '';
-    paxCard.style.display   = '';
-    const fyPD  = MGR_PAX_DATA[fy] || {};
-    const ppd   = ((fyPD[period] || fyPD.full || {}))[seg] || {};
-    const ppdF  = (fyPD.full || {})[seg] || {};
-    let paxRows = '';
-    paxRows += mgrLevelRow('Engaged (>1 course)',           ppd.engaged,    ppdF.engaged);
-    paxRows += mgrLevelRow('Single-Touch (never returned)', ppd.singleTouch, ppdF.singleTouch);
-    paxRows += mgrLevelRow('Power Participants (3+ courses)', ppd.powerPax,  ppdF.powerPax);
-    document.getElementById('mgr-pax-body').innerHTML = paxRows;
-  }
+  // Cumulative Program Health (not period-filtered — always uses CUMULATIVE_DATA)
+  const cd = CUMULATIVE_DATA[seg] || CUMULATIVE_DATA.all;
+  const base = cd.totalRegistered;
+  let cumRows = '';
+  cumRows += cumRow('Total Registered (ever)',         base,          null, 'All distinct individuals (unique by mobile) since FY 2022-23');
+  cumRows += cumRow('↳ Engaged (>1 course)',           cd.engaged,    base, 'Returned for at least one more course — across any time period');
+  cumRows += cumRow('  ↳ Progressed (entry→higher)',   cd.progressed, base, 'Moved from entry to a higher-level course within 2 FYs of first enrollment');
+  cumRows += cumRow('  ↳ Power Participants (3+)',     cd.powerPax,   base, '3 or more courses ever — prime candidates for volunteering or teacher training');
+  cumRows += cumRow('↳ Single-Touch (never returned)', cd.singleTouch,base, 'Attended exactly once and never came back — the activation opportunity pool');
+  document.getElementById('mgr-cumulative-body').innerHTML = cumRows;
 
   // Action items
   const instD = getD(fy, 'institutional');
@@ -1856,7 +1871,12 @@ function mgrLevelRow(label, periodVal, fullVal) {
   return `<tr><td>${label}</td><td>${pStr}</td><td>${fStr}</td><td>${pct}</td></tr>`;
 }
 
-
+function cumRow(label, val, base, tip='') {
+  const tipHtml = tip ? ` <span class="metric-tip" data-tip="${tip}">ⓘ</span>` : '';
+  const valStr  = (val != null) ? fmt(val) : '—';
+  const pctStr  = (val != null && base) ? Math.round(val / base * 100) + '%' : '—';
+  return `<tr><td>${label}${tipHtml}</td><td>${valStr}</td><td>${pctStr}</td></tr>`;
+}
 
 function update() {
   updateKPIs();
@@ -2238,8 +2258,10 @@ function updateOverallTable() {
   const d   = getD(fy, 'all');
   const pd  = pFY ? getD(pFY, 'all') : {};
   let rows = '';
+  rows += row('Total Registrations', d.totalRegistrations, pd.totalRegistrations, false, '', '',
+    'Total course registrations by registration ID — counts the same person multiple times if they attended multiple courses. Reflects total activity volume.');
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
-    'Distinct individuals enrolled in at least one course');
+    'Distinct individuals by mobile number — one person regardless of how many courses they attended this FY');
   rows += row('Engaged Participants', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed Participants', d.progressed, pd.progressed, false, '', '',
@@ -2264,8 +2286,10 @@ function updateAdultTable() {
   const da  = getD(fy, 'all');
   const pda = pFY ? getD(pFY, 'all') : {};
   let rows = '';
+  rows += row('Total Registrations', d.totalRegistrations, pd.totalRegistrations, false, '', '',
+    'Total course registrations by registration ID — seat-count, not headcount');
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
-    'Distinct adult individuals (18+) enrolled in at least one course');
+    'Distinct adult individuals (18+) by mobile number');
   rows += row('Engaged (>1 course)', d.engaged, pd.engaged, false, '', '',
     'Enrolled in more than one course at any level — returned at least once');
   rows += row('Progressed', d.progressed, pd.progressed, false, '', '',
@@ -2295,8 +2319,10 @@ function updateChildrenTable() {
   const d   = getD(fy, 'children');
   const pd  = pFY ? getD(pFY, 'children') : {};
   let rows = '';
+  rows += row('Total Registrations', d.totalRegistrations, pd.totalRegistrations, false, '', '',
+    'Total course registrations by registration ID — seat-count, not headcount');
   rows += row('Unique Participants', d.uniquePax, pd.uniquePax, false, '', '',
-    'Distinct children participants (under 18) enrolled in at least one course');
+    'Distinct children participants (under 18) — deduplicated by mobile (typically parent\'s mobile for young children)');
   rows += row('IP Program Participants', d.uniquePax ? Math.round(d.uniquePax*0.59) : null,
               pd.uniquePax ? Math.round(pd.uniquePax*0.59) : null, false, '', '',
     'Participants in the IP program specifically — max revenue');
@@ -2322,8 +2348,10 @@ function updateInstitutionalTable() {
   const d   = getD(fy, 'institutional');
   const pd  = pFY ? getD(pFY, 'institutional') : {};
   let rows = '';
+  rows += row('Total Registrations', d.totalRegistrations, pd.totalRegistrations, false, '', '',
+    'Total course registrations by registration ID — seat-count, not headcount');
   rows += row('Unique Pax (via institutions)', d.uniquePax, pd.uniquePax, false, '', '',
-    'Distinct individuals enrolled through school or college-based programs this FY');
+    'Distinct individuals enrolled through institutions — deduplicated by mobile where available');
   rows += row('Total MOUs Signed', d.totalMOUs, pd.totalMOUs, false, '', '',
     'Cumulative Memoranda of Understanding signed with schools and colleges — includes all historical MOUs');
   rows += row('Active MOUs', d.activeMOUs, pd.activeMOUs, false, '', '',
