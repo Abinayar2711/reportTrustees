@@ -1533,11 +1533,11 @@ const PREV_FY   = { fy2223:null, fy2324:'fy2223', fy2425:'fy2324' };
 /* Teacher data — per FY (not segment-filtered by participant type) */
 const TEACHER_PIPELINE = {
   fy2223: { ttpGrads:58, vtpGrads:98, activationRate:54, timeToFirstCourse:71,
-             paxToTeacher:1.4, vtpToTtp:10, lapsedTeachers:82, reactivated:8, hyperConc:true },
+             paxToTeacher:1.4, vtpToTtp:10, lapsedTeachers:82, reactivated:8, hyperConc:true, paretoShare:78 },
   fy2324: { ttpGrads:72, vtpGrads:118, activationRate:61, timeToFirstCourse:58,
-             paxToTeacher:1.9, vtpToTtp:14, lapsedTeachers:76, reactivated:14, hyperConc:true },
+             paxToTeacher:1.9, vtpToTtp:14, lapsedTeachers:76, reactivated:14, hyperConc:true, paretoShare:76 },
   fy2425: { ttpGrads:87, vtpGrads:134, activationRate:68, timeToFirstCourse:42,
-             paxToTeacher:2.4, vtpToTtp:18, lapsedTeachers:67, reactivated:23, hyperConc:true }
+             paxToTeacher:2.4, vtpToTtp:18, lapsedTeachers:67, reactivated:23, hyperConc:true, paretoShare:74 }
 };
 
 /* ═══════════════════════════════════════════════
@@ -2245,33 +2245,17 @@ function updateRightTable() {
     'Ran their very first course with actual students this FY — crossed from trained to actively teaching for the first time.');
   rows += row('Consistent Teachers', th.consistent, pth.consistent, false, '', '',
     'Ran at least one course in each 6-month window of the last FY — Reliability.');
-  rows += row('Pax-to-Teacher Conversion', tp.paxToTeacher, ptp.paxToTeacher,
-              false, tp.paxToTeacher+'%', ptp.paxToTeacher ? ptp.paxToTeacher+'%' : '—',
-    '% of participants who went on to complete TTP. Tracked from FY 2022-23 onwards.');
-  rows += row('VTP→TTP Conversion', tp.vtpToTtp, ptp.vtpToTtp,
-              false, tp.vtpToTtp+'%', ptp.vtpToTtp ? ptp.vtpToTtp+'%' : '—',
-    '% of VTP graduates who subsequently enrolled in TTP.');
+  rows += lockedRow('Pax-to-Teacher Conversion', tp.paxToTeacher+'%',
+    '% of participants who went on to complete TTP — measured across all years, not just this FY, since the journey from student to teacher typically spans multiple years.');
+  rows += lockedRow('VTP→TTP Conversion', tp.vtpToTtp+'%',
+    '% of VTP (volunteer training) graduates who subsequently enrolled in TTP — an all-time cumulative rate, since the decision to become a full teacher often takes time.');
   rows += row('Lapsed Teachers', th.lapsed, pth.lapsed, true, '', '',
     'Were active (taught at least once) in the last 3 FYs but did not teach anyone in the last 1 FY.');
   rows += row('Reactivated Teachers', th.reactivated, pth.reactivated, false, '', '',
     'Were lapsed, then returned to actively teach again this FY — recovered.');
-
-  // Hyper-concentration flag
-  const flagCurr = tp.hyperConc;
-  const flagPrev = pFY ? TEACHER_PIPELINE[pFY].hyperConc : null;
-  const flagBadge = flagCurr
-    ? '<span class="flag-badge-yes">YES</span>'
-    : '<span class="flag-badge-no">NO</span>';
-  const prevBadge = flagPrev !== null
-    ? (flagPrev ? '<span class="flag-badge-yes">YES</span>' : '<span class="flag-badge-no">NO</span>')
-    : '—';
-  const concTip = 'A small number of teachers are delivering most of the participant volume. If they stop teaching, overall reach drops sharply.';
-  rows += `<tr class="${flagCurr ? 'flag-row' : ''}">
-    <td>Delivery Concentration Risk <span class="metric-tip" data-tip="${concTip}">ⓘ</span></td>
-    <td style="text-align:right">${flagBadge}</td>
-    <td style="text-align:right">${prevBadge}</td>
-    <td style="text-align:right;color:#b45309;font-weight:700;">—</td>
-  </tr>`;
+  rows += row('Top 20% Teachers\' Share', tp.paretoShare, ptp.paretoShare, true,
+              tp.paretoShare+'%', ptp.paretoShare ? ptp.paretoShare+'%' : '—',
+    'The % of total participant volume delivered by just the top 20% of teachers. Like the Pareto rule — a healthy network aims to get this below 60%. Above 70% means a small group is carrying the system.');
 
   document.getElementById('sc-right-body').innerHTML = rows;
 }
