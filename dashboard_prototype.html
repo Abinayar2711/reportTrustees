@@ -818,6 +818,11 @@ body {
 
 /* MANAGER VIEW */
 .mgr-kpi-4 { grid-template-columns: repeat(4, 1fr); }
+.mgr-kpi-3 { grid-template-columns: repeat(3, 1fr); }
+
+.kpi-card-pulse .kpi-number { font-size: 52px; letter-spacing: -0.04em; }
+.kpi-card-sm { background: #f4f6fb; border-color: #dde2ef; }
+.kpi-card-sm .kpi-number { font-size: 30px; }
 
 .mgr-period-notice {
   display: inline-flex;
@@ -872,6 +877,7 @@ body {
 @media (max-width: 1100px) {
   .kpi-strip { grid-template-columns: repeat(3, 1fr); }
   .mgr-kpi-4 { grid-template-columns: repeat(2, 1fr); }
+  .mgr-kpi-3 { grid-template-columns: repeat(3, 1fr); }
   .chart-row-3 { grid-template-columns: 1fr 1fr; }
   .scorecard-grid { grid-template-columns: 1fr; }
   .scorecard-grid-4 { grid-template-columns: 1fr; }
@@ -881,6 +887,7 @@ body {
 @media (max-width: 700px) {
   .kpi-strip { grid-template-columns: 1fr 1fr; }
   .mgr-kpi-4 { grid-template-columns: 1fr 1fr; }
+  .mgr-kpi-3 { grid-template-columns: 1fr 1fr; }
   .chart-row-2, .chart-row-3 { grid-template-columns: 1fr; }
   .stat-cards-row { grid-template-columns: 1fr; }
   .topnav-title span { display: none; }
@@ -1337,27 +1344,41 @@ body {
       ⚠ Sub-period breakdown available for FY 2024-25 only — showing Full FY
     </div>
 
-    <!-- Activity KPI Strip -->
-    <div class="kpi-strip mgr-kpi-4" style="margin-top:12px;">
-      <div class="kpi-card" id="mkpi0">
-        <div class="kpi-name" id="mkpi0-name">New Enrollments</div>
-        <div class="kpi-number" id="mkpi0-num">—</div>
-        <span class="kpi-change none" id="mkpi0-chg">—</span>
+    <!-- Pulse Strip — what happened this period -->
+    <div class="kpi-strip mgr-kpi-3" style="margin-top:12px;">
+      <div class="kpi-card kpi-card-pulse">
+        <div class="kpi-name">Total Participants</div>
+        <div class="kpi-number" id="mkpi-total-num">—</div>
+        <span class="kpi-change none">Unique individuals in courses this period</span>
       </div>
-      <div class="kpi-card" id="mkpi1">
+      <div class="kpi-card kpi-card-pulse">
         <div class="kpi-name">Courses Run</div>
-        <div class="kpi-number" id="mkpi1-num">—</div>
-        <span class="kpi-change none" id="mkpi1-chg">—</span>
+        <div class="kpi-number" id="mkpi-courses-num">—</div>
+        <span class="kpi-change none">Course sessions delivered</span>
       </div>
-      <div class="kpi-card" id="mkpi2">
+      <div class="kpi-card kpi-card-pulse">
+        <div class="kpi-name">Teachers Delivering</div>
+        <div class="kpi-number" id="mkpi-deliver-num">—</div>
+        <span class="kpi-change none">Ran ≥1 course this period</span>
+      </div>
+    </div>
+
+    <!-- Secondary strip — context & health -->
+    <div class="kpi-strip mgr-kpi-3" style="margin-top:10px;">
+      <div class="kpi-card kpi-card-sm">
+        <div class="kpi-name">New Participants</div>
+        <div class="kpi-number" id="mkpi-new-num">—</div>
+        <span class="kpi-change none">First time ever attending</span>
+      </div>
+      <div class="kpi-card kpi-card-sm">
         <div class="kpi-name">Active Teachers</div>
-        <div class="kpi-number" id="mkpi2-num">—</div>
-        <span class="kpi-change none" id="mkpi2-chg">—</span>
+        <div class="kpi-number" id="mkpi-active-num">—</div>
+        <span class="kpi-change none">Taught in last 3 FYs</span>
       </div>
-      <div class="kpi-card" id="mkpi3">
-        <div class="kpi-name" id="mkpi3-name">New MOUs Signed</div>
-        <div class="kpi-number" id="mkpi3-num">—</div>
-        <span class="kpi-change none" id="mkpi3-chg">—</span>
+      <div class="kpi-card kpi-card-sm" id="mkpi-mou-card">
+        <div class="kpi-name">New MOUs Signed</div>
+        <div class="kpi-number" id="mkpi-mou-num">—</div>
+        <span class="kpi-change none" id="mkpi-mou-sub">Institutional segment</span>
       </div>
     </div>
 
@@ -1591,18 +1612,18 @@ const PERIOD_LABELS = {
 
 const MANAGER_DATA = {
   fy2425: {
-    mtd:  { all:{newEnrollments:1100,coursesRun:38, activeTeachers:65, newMOUs:2 }, adult:{newEnrollments:700, coursesRun:26,activeTeachers:52,newMOUs:null}, children:{newEnrollments:220,coursesRun:8, activeTeachers:20,newMOUs:null}, institutional:{newEnrollments:180,coursesRun:4, activeTeachers:18,newMOUs:2 } },
-    qtd:  { all:{newEnrollments:3600,coursesRun:118,activeTeachers:138,newMOUs:5 }, adult:{newEnrollments:2300,coursesRun:80,activeTeachers:110,newMOUs:null}, children:{newEnrollments:720,coursesRun:26,activeTeachers:45, newMOUs:null}, institutional:{newEnrollments:580,coursesRun:12,activeTeachers:55,newMOUs:5 } },
-    q1:   { all:{newEnrollments:4200,coursesRun:145,activeTeachers:190,newMOUs:7 }, adult:{newEnrollments:2700,coursesRun:98,activeTeachers:152,newMOUs:null}, children:{newEnrollments:870, coursesRun:32,activeTeachers:64, newMOUs:null}, institutional:{newEnrollments:630, coursesRun:15,activeTeachers:88,newMOUs:7 } },
-    q2:   { all:{newEnrollments:3600,coursesRun:120,activeTeachers:168,newMOUs:5 }, adult:{newEnrollments:2300,coursesRun:80, activeTeachers:135,newMOUs:null}, children:{newEnrollments:700, coursesRun:26,activeTeachers:52, newMOUs:null}, institutional:{newEnrollments:600, coursesRun:14,activeTeachers:78,newMOUs:5 } },
-    h1:   { all:{newEnrollments:7800,coursesRun:265,activeTeachers:245,newMOUs:12}, adult:{newEnrollments:5000,coursesRun:178,activeTeachers:195,newMOUs:null}, children:{newEnrollments:1570,coursesRun:58,activeTeachers:82, newMOUs:null}, institutional:{newEnrollments:1230,coursesRun:29,activeTeachers:112,newMOUs:12} },
-    q3:   { all:{newEnrollments:3500,coursesRun:118,activeTeachers:185,newMOUs:6 }, adult:{newEnrollments:2280,coursesRun:79, activeTeachers:148,newMOUs:null}, children:{newEnrollments:720, coursesRun:26,activeTeachers:60, newMOUs:null}, institutional:{newEnrollments:500, coursesRun:13,activeTeachers:82,newMOUs:6 } },
-    q4:   { all:{newEnrollments:2930,coursesRun:97, activeTeachers:165,newMOUs:4 }, adult:{newEnrollments:1920,coursesRun:66, activeTeachers:130,newMOUs:null}, children:{newEnrollments:590, coursesRun:22,activeTeachers:48, newMOUs:null}, institutional:{newEnrollments:420, coursesRun:9, activeTeachers:72,newMOUs:4 } },
-    h2:   { all:{newEnrollments:6430,coursesRun:215,activeTeachers:228,newMOUs:10}, adult:{newEnrollments:4200,coursesRun:145,activeTeachers:182,newMOUs:null}, children:{newEnrollments:1310,coursesRun:48,activeTeachers:75, newMOUs:null}, institutional:{newEnrollments:920, coursesRun:22,activeTeachers:98, newMOUs:10} },
-    full: { all:{newEnrollments:14230,coursesRun:480,activeTeachers:342,newMOUs:22}, adult:{newEnrollments:9200,coursesRun:323,activeTeachers:210,newMOUs:null}, children:{newEnrollments:3100,coursesRun:106,activeTeachers:95,newMOUs:null}, institutional:{newEnrollments:2930,coursesRun:51,activeTeachers:145,newMOUs:22} }
+    mtd:  { all:{totalParticipants:1100,newPax:580, coursesRun:38, teachersDelivering:52, activeTeachers:65, newMOUs:2 }, adult:{totalParticipants:700, newPax:380, coursesRun:26,teachersDelivering:38,activeTeachers:52, newMOUs:null}, children:{totalParticipants:220, newPax:115,coursesRun:8, teachersDelivering:14,activeTeachers:20,newMOUs:null}, institutional:{totalParticipants:180, newPax:85, coursesRun:4, teachersDelivering:10,activeTeachers:18,newMOUs:2 } },
+    qtd:  { all:{totalParticipants:3600,newPax:1840,coursesRun:118,teachersDelivering:112,activeTeachers:138,newMOUs:5 }, adult:{totalParticipants:2300,newPax:1200,coursesRun:80, teachersDelivering:72, activeTeachers:110,newMOUs:null}, children:{totalParticipants:720, newPax:365,coursesRun:26,teachersDelivering:28, activeTeachers:45, newMOUs:null}, institutional:{totalParticipants:580, newPax:275,coursesRun:12,teachersDelivering:22, activeTeachers:55, newMOUs:5 } },
+    q1:   { all:{totalParticipants:4200,newPax:2310,coursesRun:145,teachersDelivering:158,activeTeachers:190,newMOUs:7 }, adult:{totalParticipants:2700,newPax:1485,coursesRun:98, teachersDelivering:102,activeTeachers:152,newMOUs:null}, children:{totalParticipants:870, newPax:479,coursesRun:32,teachersDelivering:34, activeTeachers:64, newMOUs:null}, institutional:{totalParticipants:630, newPax:346,coursesRun:15,teachersDelivering:27, activeTeachers:88, newMOUs:7 } },
+    q2:   { all:{totalParticipants:3600,newPax:2016,coursesRun:120,teachersDelivering:145,activeTeachers:168,newMOUs:5 }, adult:{totalParticipants:2300,newPax:1288,coursesRun:80, teachersDelivering:92, activeTeachers:135,newMOUs:null}, children:{totalParticipants:700, newPax:392,coursesRun:26,teachersDelivering:28, activeTeachers:52, newMOUs:null}, institutional:{totalParticipants:600, newPax:336,coursesRun:14,teachersDelivering:24, activeTeachers:78, newMOUs:5 } },
+    h1:   { all:{totalParticipants:7800,newPax:4212,coursesRun:265,teachersDelivering:195,activeTeachers:245,newMOUs:12}, adult:{totalParticipants:5000,newPax:2700,coursesRun:178,teachersDelivering:126,activeTeachers:195,newMOUs:null}, children:{totalParticipants:1570,newPax:848,coursesRun:58, teachersDelivering:50, activeTeachers:82, newMOUs:null}, institutional:{totalParticipants:1230,newPax:664,coursesRun:29, teachersDelivering:42, activeTeachers:112,newMOUs:12} },
+    q3:   { all:{totalParticipants:3500,newPax:1890,coursesRun:118,teachersDelivering:140,activeTeachers:185,newMOUs:6 }, adult:{totalParticipants:2280,newPax:1231,coursesRun:79, teachersDelivering:90, activeTeachers:148,newMOUs:null}, children:{totalParticipants:720, newPax:389,coursesRun:26,teachersDelivering:27, activeTeachers:60, newMOUs:null}, institutional:{totalParticipants:500, newPax:270,coursesRun:13,teachersDelivering:20, activeTeachers:82, newMOUs:6 } },
+    q4:   { all:{totalParticipants:2930,newPax:1612,coursesRun:97, teachersDelivering:128,activeTeachers:165,newMOUs:4 }, adult:{totalParticipants:1920,newPax:1056,coursesRun:66, teachersDelivering:82, activeTeachers:130,newMOUs:null}, children:{totalParticipants:590, newPax:325,coursesRun:22, teachersDelivering:22, activeTeachers:48, newMOUs:null}, institutional:{totalParticipants:420, newPax:231,coursesRun:9,  teachersDelivering:18, activeTeachers:72, newMOUs:4 } },
+    h2:   { all:{totalParticipants:6430,newPax:3472,coursesRun:215,teachersDelivering:175,activeTeachers:228,newMOUs:10}, adult:{totalParticipants:4200,newPax:2268,coursesRun:145,teachersDelivering:112,activeTeachers:182,newMOUs:null}, children:{totalParticipants:1310,newPax:708,coursesRun:48, teachersDelivering:42, activeTeachers:75, newMOUs:null}, institutional:{totalParticipants:920, newPax:497,coursesRun:22, teachersDelivering:36, activeTeachers:98, newMOUs:10} },
+    full: { all:{totalParticipants:14230,newPax:6545,coursesRun:480,teachersDelivering:280,activeTeachers:342,newMOUs:22}, adult:{totalParticipants:9200,newPax:4232,coursesRun:323,teachersDelivering:180,activeTeachers:210,newMOUs:null}, children:{totalParticipants:3100,newPax:1426,coursesRun:106,teachersDelivering:80, activeTeachers:95, newMOUs:null}, institutional:{totalParticipants:2930,newPax:1348,coursesRun:51, teachersDelivering:68, activeTeachers:145,newMOUs:22} }
   },
-  fy2324: { full: { all:{newEnrollments:12700,coursesRun:398,activeTeachers:352,newMOUs:18}, adult:{newEnrollments:8100,coursesRun:270,activeTeachers:198,newMOUs:null}, children:{newEnrollments:2900,coursesRun:88,activeTeachers:92,newMOUs:null}, institutional:{newEnrollments:1700,coursesRun:40,activeTeachers:130,newMOUs:18} } },
-  fy2223: { full: { all:{newEnrollments:10200,coursesRun:320,activeTeachers:353,newMOUs:14}, adult:{newEnrollments:6800,coursesRun:218,activeTeachers:190,newMOUs:null}, children:{newEnrollments:2300,coursesRun:70,activeTeachers:88,newMOUs:null}, institutional:{newEnrollments:1100,coursesRun:32,activeTeachers:120,newMOUs:14} } }
+  fy2324: { full: { all:{totalParticipants:12700,newPax:5842,coursesRun:398,teachersDelivering:265,activeTeachers:352,newMOUs:18}, adult:{totalParticipants:8100,newPax:3726,coursesRun:270,teachersDelivering:170,activeTeachers:198,newMOUs:null}, children:{totalParticipants:2900,newPax:1334,coursesRun:88,teachersDelivering:74,activeTeachers:92,newMOUs:null}, institutional:{totalParticipants:1700,newPax:782,coursesRun:40,teachersDelivering:58,activeTeachers:130,newMOUs:18} } },
+  fy2223: { full: { all:{totalParticipants:10200,newPax:4692,coursesRun:320,teachersDelivering:248,activeTeachers:353,newMOUs:14}, adult:{totalParticipants:6800,newPax:3128,coursesRun:218,teachersDelivering:158,activeTeachers:190,newMOUs:null}, children:{totalParticipants:2300,newPax:1058,coursesRun:70,teachersDelivering:62,activeTeachers:88,newMOUs:null}, institutional:{totalParticipants:1100,newPax:506,coursesRun:32,teachersDelivering:48,activeTeachers:120,newMOUs:14} } }
 };
 
 const LEVEL_DATA = {
@@ -1747,13 +1768,17 @@ function updateManagerView() {
   document.getElementById('mgr-section-header').textContent =
     'Activity — ' + PERIOD_LABELS[currentPeriod] + ' · ' + FY_LABELS[fy];
 
-  // KPI cards
-  setMgrKPI(0, 'New Enrollments', md.newEnrollments);
-  setMgrKPI(1, 'Courses Run',     md.coursesRun);
-  setMgrKPI(2, 'Active Teachers', md.activeTeachers);
+  // Pulse KPIs
+  document.getElementById('mkpi-total-num').textContent   = fmt(md.totalParticipants) || '—';
+  document.getElementById('mkpi-courses-num').textContent = fmt(md.coursesRun)         || '—';
+  document.getElementById('mkpi-deliver-num').textContent = fmt(md.teachersDelivering) || '—';
+
+  // Secondary KPIs
+  document.getElementById('mkpi-new-num').textContent    = fmt(md.newPax)         || '—';
+  document.getElementById('mkpi-active-num').textContent = fmt(md.activeTeachers) || '—';
   const showMOU = seg === 'all' || seg === 'institutional';
-  document.getElementById('mkpi3-name').textContent = 'New MOUs Signed';
-  setMgrKPI(3, 'New MOUs Signed', showMOU ? md.newMOUs : null, !showMOU);
+  document.getElementById('mkpi-mou-card').style.display = showMOU ? '' : 'none';
+  if (showMOU) document.getElementById('mkpi-mou-num').textContent = fmt(md.newMOUs) || '—';
 
   // Level breakdown
   const levelSection = document.getElementById('mgr-level-section');
@@ -1831,15 +1856,7 @@ function mgrLevelRow(label, periodVal, fullVal) {
   return `<tr><td>${label}</td><td>${pStr}</td><td>${fStr}</td><td>${pct}</td></tr>`;
 }
 
-function setMgrKPI(idx, name, val, dimmed=false) {
-  document.getElementById('mkpi'+idx+'-num').textContent =
-    (val != null && !dimmed) ? fmt(val) : '—';
-  const numEl = document.getElementById('mkpi'+idx+'-num');
-  numEl.className = 'kpi-number' + (dimmed ? ' na' : '');
-  const chgEl = document.getElementById('mkpi'+idx+'-chg');
-  chgEl.className  = 'kpi-change none';
-  chgEl.textContent = dimmed ? 'N/A for this segment' : '—';
-}
+
 
 function update() {
   updateKPIs();
