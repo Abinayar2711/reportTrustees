@@ -1117,24 +1117,65 @@ body {
 
       <div class="stat-cards-row">
         <div class="stat-card">
+          <div class="stat-card-label">Total Registrations</div>
+          <div class="stat-card-number" id="s-total-regs">20,900</div>
+          <div class="stat-card-sub">All course seat-fills this FY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Trackable Participants</div>
+          <div class="stat-card-number" id="s-total-pax">14,230</div>
+          <div class="stat-card-sub">Registrations with a valid mobile</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Mobile Coverage</div>
+          <div class="stat-card-number" id="s-coverage">68%</div>
+          <div class="stat-card-sub">Of registrations are trackable</div>
+        </div>
+      </div>
+
+      <div class="stat-cards-row" style="margin-top:10px;">
+        <div class="stat-card">
           <div class="stat-card-label">Adult Programs</div>
           <div class="stat-card-number" id="s-adult-pax">9,200</div>
-          <div class="stat-card-sub">Unique participants</div>
+          <div class="stat-card-sub">Trackable participants</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-label">Children Programs</div>
           <div class="stat-card-number" id="s-child-pax">3,100</div>
-          <div class="stat-card-sub">Unique participants</div>
+          <div class="stat-card-sub">Trackable participants</div>
         </div>
         <div class="stat-card">
           <div class="stat-card-label">Institutional</div>
           <div class="stat-card-number" id="s-inst-pax">2,930</div>
-          <div class="stat-card-sub">Reached via institutions</div>
+          <div class="stat-card-sub">Trackable via institutions</div>
+        </div>
+      </div>
+
+      <div class="story-stats-row" style="margin-top:16px;">
+        <div class="story-stat-mini">
+          <div class="val" id="s-new-enrollments">6,545</div>
+          <div class="lbl">New Enrollments</div>
+          <div class="badge-green" id="s-new-enroll-badge">never seen before</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-returning">7,685</div>
+          <div class="lbl">Returning Participants</div>
+          <div class="badge-green">came back this FY</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-courses-taken">480</div>
+          <div class="lbl">Courses Taken</div>
+          <div class="badge-green">sessions facilitated</div>
+        </div>
+        <div class="story-stat-mini">
+          <div class="val" id="s-teachers-delivering">280</div>
+          <div class="lbl">Teachers Delivering</div>
+          <div class="badge-green">ran ≥1 course this FY</div>
         </div>
       </div>
 
       <div class="story-note" id="s-reach-note">
-        <strong>Total unique participants: 14,230</strong> — up <strong style="color:var(--green)">12.1%</strong> from last year (12,700). Fastest growth segment: Institutional, up 72.4%.
+        <strong>14,230 trackable participants</strong> — up <strong style="color:var(--green)">12.1%</strong> from last year (12,700). Of these, <strong id="s-new-pct">46%</strong> are new enrollments (mobile never seen before this FY). The remaining 32% of registrations have no mobile number and remain outside our tracking window.
       </div>
     </div>
 
@@ -1146,8 +1187,13 @@ body {
 
       <div class="story-stats-row">
         <div class="story-stat-mini">
+          <div class="val" id="s-teachers-delivering-ch2">280</div>
+          <div class="lbl">Teachers Delivering</div>
+          <div class="badge-green">ran ≥1 course this FY</div>
+        </div>
+        <div class="story-stat-mini">
           <div class="val" id="s-active-teachers">342</div>
-          <div class="lbl">Active Teachers</div>
+          <div class="lbl">Active Pool (3-yr)</div>
           <div class="badge-amber" id="s-active-teachers-badge">▼ 2.8% YoY</div>
         </div>
         <div class="story-stat-mini">
@@ -1163,7 +1209,7 @@ body {
         <div class="story-stat-mini">
           <div class="val" id="s-consistent-teachers">198</div>
           <div class="lbl">Consistent Teachers</div>
-          <div class="badge-green" id="s-consistent-pct">58% of active</div>
+          <div class="badge-green" id="s-consistent-pct">58% of delivering</div>
         </div>
       </div>
 
@@ -1208,7 +1254,7 @@ body {
       </div>
 
       <div class="engagement-bar-wrap">
-        <div class="engagement-bar-label" id="s-bar-label">Participant Split — 14,230 total</div>
+        <div class="engagement-bar-label" id="s-bar-label">Trackable Participant Split — 14,230 trackable base</div>
         <div class="h-bar" id="s-eng-bar">
           <div class="h-bar-seg" id="s-bar-eng" style="width:38%; background:#2ecc71;">Engaged 38%</div>
           <div class="h-bar-seg" id="s-bar-st"  style="width:38%; background:#8e9ecb;">Single-Touch 38%</div>
@@ -1252,7 +1298,7 @@ body {
       </div>
 
       <div class="story-chart-wrap">
-        <div class="story-chart-title">Cohort Retention Curve — % of cohort still active</div>
+        <div class="story-chart-title">Cohort Retention Curve — of every 100 first-timers from a given year, how many returned in Year 1, Year 2?</div>
         <div style="height:210px;"><canvas id="retentionChartStory"></canvas></div>
       </div>
 
@@ -2513,20 +2559,32 @@ function updateStoryView() {
   document.getElementById('story-fy-badge').textContent = 'Viewing: ' + fyLabel;
 
   /* Chapter 1: Reach */
-  document.getElementById('s-adult-pax').textContent = fmt(da.uniquePax);
-  document.getElementById('s-child-pax').textContent = fmt(dc.uniquePax);
-  document.getElementById('s-inst-pax').textContent  = fmt(di.uniquePax);
-  const instGrowth = pd.uniquePax ? ((d.uniquePax - pd.uniquePax)/pd.uniquePax*100).toFixed(1) : null;
+  document.getElementById('s-total-regs').textContent  = fmt(d.totalRegistrations);
+  document.getElementById('s-total-pax').textContent   = fmt(d.uniquePax);
+  document.getElementById('s-coverage').textContent    = (d.mobileCoverage || '—') + (d.mobileCoverage ? '%' : '');
+  document.getElementById('s-adult-pax').textContent   = fmt(da.uniquePax);
+  document.getElementById('s-child-pax').textContent   = fmt(dc.uniquePax);
+  document.getElementById('s-inst-pax').textContent    = fmt(di.uniquePax);
+  const returning = (d.uniquePax != null && d.newEnrollments != null) ? d.uniquePax - d.newEnrollments : null;
+  document.getElementById('s-new-enrollments').textContent = fmt(d.newEnrollments);
+  document.getElementById('s-returning').textContent       = fmt(returning);
+  document.getElementById('s-courses-taken').textContent   = fmt(d.coursesRun);
+  document.getElementById('s-teachers-delivering').textContent = fmt(d.teachersDelivering);
+  const newPct = (d.newEnrollments && d.uniquePax) ? Math.round(d.newEnrollments/d.uniquePax*100) : null;
+  if (newPct) document.getElementById('s-new-enroll-badge').textContent = newPct + '% of trackable base';
   const instSegPd = pFY ? getD(pFY, 'institutional') : {};
   const instGrowthSeg = (instSegPd.uniquePax && di.uniquePax)
     ? ((di.uniquePax - instSegPd.uniquePax)/instSegPd.uniquePax*100).toFixed(1) : null;
   const allGrowthPct = pd.uniquePax ? ((d.uniquePax - pd.uniquePax)/pd.uniquePax*100).toFixed(1) : null;
+  const blindSpotPct = d.mobileCoverage ? (100 - d.mobileCoverage) : null;
+  document.getElementById('s-new-pct').textContent = newPct ? newPct + '%' : '—';
   document.getElementById('s-reach-note').innerHTML = pd.uniquePax
-    ? `<strong>Total unique participants: ${fmt(d.uniquePax)}</strong> — up <strong style="color:var(--green)">${allGrowthPct}%</strong> from last year (${fmt(pd.uniquePax)}). Fastest growth segment: Institutional${instGrowthSeg ? ', up '+instGrowthSeg+'%' : ''}.`
-    : `<strong>Total unique participants: ${fmt(d.uniquePax)}</strong> — first year of tracked data.`;
+    ? `<strong>${fmt(d.uniquePax)} trackable participants</strong> — up <strong style="color:var(--green)">${allGrowthPct}%</strong> from last year (${fmt(pd.uniquePax)}). Of these, <strong>${newPct || '—'}%</strong> are new enrollments (mobile never seen before this FY).${blindSpotPct ? ' The remaining <strong>'+blindSpotPct+'%</strong> of registrations have no mobile and remain outside our tracking window.' : ''}`
+    : `<strong>${fmt(d.uniquePax)} trackable participants</strong> — first year of tracked data.`;
 
   /* Chapter 2: Teacher Pipeline */
   const totalTeachers = th.consistent + th.inconsistent + th.newlyActivated + th.lapsed + th.reactivated;
+  document.getElementById('s-teachers-delivering-ch2').textContent = fmt(d.teachersDelivering);
   document.getElementById('s-active-teachers').textContent = totalTeachers;
   document.getElementById('s-newly-activated').textContent = th.newlyActivated;
   document.getElementById('s-activation-rate').textContent = tp.activationRate + '%';
@@ -2541,7 +2599,9 @@ function updateStoryView() {
   }
   const prevRate = pFY ? TEACHER_PIPELINE[pFY].activationRate : null;
   document.getElementById('s-activation-rate-badge').textContent = prevRate ? '▲ from '+prevRate+'%' : 'first year';
-  document.getElementById('s-consistent-pct').textContent = Math.round(th.consistent/totalTeachers*100) + '% of active';
+  document.getElementById('s-consistent-pct').textContent = d.teachersDelivering
+    ? Math.round(th.consistent/d.teachersDelivering*100) + '% of delivering'
+    : Math.round(th.consistent/totalTeachers*100) + '% of active';
   document.getElementById('s-teacher-chart-title').textContent = 'Teacher Health Breakdown — ' + totalTeachers + ' Active Teachers';
   renderStoryTeacherChart(th);
 
