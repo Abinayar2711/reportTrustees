@@ -1368,6 +1368,40 @@ body {
       </div>
     </div>
 
+    <!-- Teacher Pipeline -->
+    <div class="section-header" style="margin-top:28px;">Teacher Pipeline — <span id="mgr-teacher-period-label">Month to Date</span></div>
+    <div class="kpi-strip mgr-kpi-4" style="margin-top:12px;">
+      <div class="kpi-card">
+        <div class="kpi-name">Newly Activated</div>
+        <div class="kpi-number" id="mtkpi0-num">—</div>
+        <span class="kpi-change none">First course taught this period</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">Reactivated Teachers</div>
+        <div class="kpi-number" id="mtkpi1-num">—</div>
+        <span class="kpi-change none">Was lapsed, came back</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">TTP Graduates</div>
+        <div class="kpi-number" id="mtkpi2-num">—</div>
+        <span class="kpi-change none">New teacher-track completions</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-name">VTP Graduates</div>
+        <div class="kpi-number" id="mtkpi3-num">—</div>
+        <span class="kpi-change none">New volunteer-track completions</span>
+      </div>
+    </div>
+
+    <!-- Participant Quality -->
+    <div id="mgr-pax-header" class="section-header" style="margin-top:28px;">Participant Quality</div>
+    <div id="mgr-pax-card" class="scorecard-card" style="max-width:560px;">
+      <table class="sc-table">
+        <thead><tr><th>Metric</th><th>This Period</th><th>Full FY</th><th>% of FY</th></tr></thead>
+        <tbody id="mgr-pax-body"></tbody>
+      </table>
+    </div>
+
     <!-- Action Items -->
     <div class="section-header" style="margin-top:28px;">Action Items</div>
     <div class="chart-row-2">
@@ -1572,6 +1606,32 @@ const LEVEL_DATA = {
   fy2223: { full: { adult:{l1:5500,l2:1100,l3:200}, children:{l1:1900,l2:380} } }
 };
 
+/* Participant quality per period/segment */
+const MGR_PAX_DATA = {
+  fy2425: {
+    mtd:  { all:{engaged:450,singleTouch:460,powerPax:82},    adult:{engaged:285,singleTouch:400,powerPax:74},  children:{engaged:105,singleTouch:42,powerPax:8},   institutional:{engaged:60, singleTouch:null,powerPax:null} },
+    qtd:  { all:{engaged:1480,singleTouch:1510,powerPax:265}, adult:{engaged:940,singleTouch:1310,powerPax:238}, children:{engaged:345,singleTouch:140,powerPax:24}, institutional:{engaged:195,singleTouch:null,powerPax:null} },
+    h1:   { all:{engaged:2990,singleTouch:3040,powerPax:530}, adult:{engaged:1900,singleTouch:2640,powerPax:478}, children:{engaged:700,singleTouch:280,powerPax:48},  institutional:{engaged:390,singleTouch:null,powerPax:null} },
+    h2:   { all:{engaged:2470,singleTouch:2510,powerPax:440}, adult:{engaged:1570,singleTouch:2180,powerPax:395}, children:{engaged:580,singleTouch:230,powerPax:40},  institutional:{engaged:320,singleTouch:null,powerPax:null} },
+    full: { all:{engaged:5410,singleTouch:5420,powerPax:890}, adult:{engaged:3100,singleTouch:4800,powerPax:890}, children:{engaged:980,singleTouch:1820,powerPax:116}, institutional:{engaged:1330,singleTouch:null,powerPax:null} }
+  },
+  fy2324: { full: { all:{engaged:5010,singleTouch:5000,powerPax:770}, adult:{engaged:2800,singleTouch:4300,powerPax:620}, children:{engaged:860,singleTouch:1740,powerPax:98}, institutional:{engaged:1350,singleTouch:null,powerPax:null} } },
+  fy2223: { full: { all:{engaged:3800,singleTouch:4500,powerPax:620}, adult:{engaged:2400,singleTouch:3200,powerPax:480}, children:{engaged:720,singleTouch:1400,powerPax:82},  institutional:{engaged:680, singleTouch:null,powerPax:null} } }
+};
+
+/* Teacher pipeline per period (org-wide, not segment-split) */
+const MGR_TEACHER_DATA = {
+  fy2425: {
+    mtd:  {newlyActivated:6,  reactivated:3,  ttpGrads:8,  vtpGrads:12},
+    qtd:  {newlyActivated:18, reactivated:8,  ttpGrads:24, vtpGrads:36},
+    h1:   {newlyActivated:32, reactivated:14, ttpGrads:48, vtpGrads:74},
+    h2:   {newlyActivated:23, reactivated:9,  ttpGrads:39, vtpGrads:60},
+    full: {newlyActivated:55, reactivated:23, ttpGrads:87, vtpGrads:134}
+  },
+  fy2324: { full: {newlyActivated:51, reactivated:17, ttpGrads:72, vtpGrads:118} },
+  fy2223: { full: {newlyActivated:48, reactivated:11, ttpGrads:58, vtpGrads:98} }
+};
+
 /* ═══════════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════════ */
@@ -1702,6 +1762,34 @@ function updateManagerView() {
       seg === 'all' ? 'Enrollments by Program Level — All Segments' :
       seg === 'adult' ? 'Enrollments by Program Level — Adult' : 'Enrollments by Program Level — Children';
     document.getElementById('mgr-level-body').innerHTML = rows;
+  }
+
+  // Teacher Pipeline (org-wide, shown for all segments)
+  const fyTD = MGR_TEACHER_DATA[fy] || {};
+  const td   = (fyTD[period] || fyTD.full || {});
+  document.getElementById('mgr-teacher-period-label').textContent = PERIOD_LABELS[currentPeriod];
+  document.getElementById('mtkpi0-num').textContent = fmt(td.newlyActivated) || '—';
+  document.getElementById('mtkpi1-num').textContent = fmt(td.reactivated)    || '—';
+  document.getElementById('mtkpi2-num').textContent = fmt(td.ttpGrads)       || '—';
+  document.getElementById('mtkpi3-num').textContent = fmt(td.vtpGrads)       || '—';
+
+  // Participant Quality (hidden for institutional — no single-touch / power pax data)
+  const paxHeader = document.getElementById('mgr-pax-header');
+  const paxCard   = document.getElementById('mgr-pax-card');
+  if (seg === 'institutional') {
+    paxHeader.style.display = 'none';
+    paxCard.style.display   = 'none';
+  } else {
+    paxHeader.style.display = '';
+    paxCard.style.display   = '';
+    const fyPD  = MGR_PAX_DATA[fy] || {};
+    const ppd   = ((fyPD[period] || fyPD.full || {}))[seg] || {};
+    const ppdF  = (fyPD.full || {})[seg] || {};
+    let paxRows = '';
+    paxRows += mgrLevelRow('Engaged (>1 course)',           ppd.engaged,    ppdF.engaged);
+    paxRows += mgrLevelRow('Single-Touch (never returned)', ppd.singleTouch, ppdF.singleTouch);
+    paxRows += mgrLevelRow('Power Participants (3+ courses)', ppd.powerPax,  ppdF.powerPax);
+    document.getElementById('mgr-pax-body').innerHTML = paxRows;
   }
 
   // Action items
