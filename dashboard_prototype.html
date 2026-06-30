@@ -977,7 +977,7 @@ body {
         <span class="kpi-sub" id="kpi2-sub"></span>
       </div>
       <div class="kpi-card" id="kpi3">
-        <div class="kpi-name" id="kpi3-name">Courses Run</div>
+        <div class="kpi-name" id="kpi3-name">Courses Taken</div>
         <div class="kpi-number" id="kpi3-num">—</div>
         <span class="kpi-change none" id="kpi3-chg">—</span>
         <span class="kpi-sub" id="kpi3-sub"></span>
@@ -1375,9 +1375,9 @@ body {
         <span class="kpi-change none">Registrations with a valid mobile number</span>
       </div>
       <div class="kpi-card kpi-card-pulse">
-        <div class="kpi-name">Courses Run</div>
+        <div class="kpi-name">Courses Taken</div>
         <div class="kpi-number" id="mkpi-courses-num">—</div>
-        <span class="kpi-change none">Sessions delivered</span>
+        <span class="kpi-change none">Sessions facilitated by teachers</span>
       </div>
     </div>
 
@@ -1969,18 +1969,18 @@ function updateKPIs() {
     ' Key Performance Indicators — ' + fyLabel;
 
   if (seg === 'institutional') {
-    // Institutional: Total Registrations · Trackable Pax · New Enrollments · Courses Run · Active MOUs
+    // Institutional: Total Registrations · Trackable Pax · New Enrollments · Courses Taken · Active MOUs
     setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false, false, false, 'Course seat-count at institutions this FY');
     setKPI(1, 'Trackable Participants', d.uniquePax, pFY ? pd.uniquePax : null, false, false, false, 'Registrations with a valid mobile — our trackable universe at institutions');
     setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'Mobile not seen in any previous FY since 2022-23');
-    setKPI(3, 'Courses Run', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions delivered at schools & colleges');
+    setKPI(3, 'Courses Taken', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions facilitated by teachers at schools & colleges');
     setKPI(4, 'Active MOUs', d.activeMOUs, pFY ? pd.activeMOUs : null, false, false, false, 'Institutions with ≥1 course this FY');
   } else {
-    // All / Adult / Children: Total Registrations · Trackable Participants · New Enrollments · Courses Run · Active Teachers
+    // All / Adult / Children: Total Registrations · Trackable Participants · New Enrollments · Courses Taken · Active Teachers
     setKPI(0, 'Total Registrations', d.totalRegistrations, pFY ? pd.totalRegistrations : null, false, false, false, 'Course seat-count by registration ID');
     setKPI(1, 'Trackable Participants', d.uniquePax, pFY ? pd.uniquePax : null, false, false, false, 'Registrations with a valid mobile — the portion we can track, deduplicate and follow over time');
     setKPI(2, 'New Enrollments', d.newEnrollments, pFY ? pd.newEnrollments : null, false, false, false, 'Mobile not seen in any previous FY since 2022-23');
-    setKPI(3, 'Courses Run', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions delivered across all teachers this FY');
+    setKPI(3, 'Courses Taken', d.coursesRun, pFY ? pd.coursesRun : null, false, false, false, 'Sessions facilitated by teachers across all teachers this FY');
     setKPI(4, 'Teachers Delivering', d.teachersDelivering, pFY ? pd.teachersDelivering : null, false, false, false, 'Ran ≥1 course this FY — who contributed to these numbers');
   }
 }
@@ -2301,8 +2301,8 @@ function updateOverallTable() {
     'Registrations with a valid mobile, deduplicated — one individual regardless of how many courses. The trackable universe from which all downstream metrics are drawn.');
   rows += row('↳ New Enrollments', d.newEnrollments, pd.newEnrollments, false, '', '',
     'Among trackable — mobile never seen in any prior FY since 2022-23. A lapsed returner is Returning, not New.');
-  rows += row('Courses Run', d.coursesRun, pd.coursesRun, false, '', '',
-    'Total course sessions delivered this FY');
+  rows += row('Courses Taken', d.coursesRun, pd.coursesRun, false, '', '',
+    'Total course sessions facilitated by teachers this FY');
   rows += row('Teachers Delivering', d.teachersDelivering, pd.teachersDelivering, false, '', '',
     'Ran ≥1 course this FY — who actually contributed to these participant numbers');
   rows += row('Active Teachers (3-yr pool)', d.activeTeachers, pd.activeTeachers, false, '', '',
@@ -2426,7 +2426,7 @@ function updateInstitutionalTable() {
               d.mouLag ? d.mouLag+'d' : '—', pd.mouLag ? pd.mouLag+'d' : '—',
     'Average days from MOU signing to the institution running its very first course');
   rows += row('Avg Courses / Active Institution', d.avgCoursesPerInst, pd.avgCoursesPerInst, false, '', '',
-    'Average number of courses run per institution that was active this FY — measures engagement depth');
+    'Average number of courses taken per institution that was active this FY — measures engagement depth');
   rows += lockedRow('Student Penetration Rate', '—',
     'Data not yet confirmed — % of total eligible students across MOU institutions who enrolled in at least one course. To be enabled once eligibility counts are extracted from MOU documents.');
   rows += row('Avg Behavioral Depth Score', d.avgDepthScore, pd.avgDepthScore,
